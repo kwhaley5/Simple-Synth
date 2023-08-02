@@ -22,6 +22,8 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                        )
 #endif
 {
+    synth.addSound(new SynthSound());
+    synth.addVoice(new SynthVoice());
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -93,8 +95,15 @@ void SimpleSynthAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth.setCurrentPlaybackSampleRate(sampleRate);
+    
+    for (int i = 0; i < synth.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+        }
+    }
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -138,12 +147,15 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        if (auto voice = dynamic_cast<juce::SynthesiserVoice*>(synth.getVoice(i)))
+        {
 
-        // ..do something to the data...
+        }
     }
+
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
