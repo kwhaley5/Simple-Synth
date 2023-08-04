@@ -28,8 +28,7 @@ public:
 private:
     SimpleSynthAudioProcessor& audioProcessor;
 
-    OscComp oscComp1{audioProcessor.apvts};
-    OscComp oscComp2{ audioProcessor.apvts };
+    OscComp oscComp{audioProcessor.apvts};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
 };

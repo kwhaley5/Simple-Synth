@@ -22,8 +22,11 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                        )
 #endif
 {
-    synth.addSound(new SynthSound());
-    synth.addVoice(new SynthVoice());
+    synth1.addSound(new SynthSound());
+    synth1.addVoice(new SynthVoice());
+
+    synth2.addSound(new SynthSound());
+    synth2.addVoice(new SynthVoice());
 
     attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack1"));
     decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay1"));
@@ -33,6 +36,17 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     sine1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("sine1"));
     saw1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw1"));
     square1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square1"));
+    triangle1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle1"));
+
+    attack2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack2"));
+    decay2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay2"));
+    sustain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("sustain2"));
+    release2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("release2"));
+    oscGain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("oscGain2"));
+    sine2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("sine2"));
+    saw2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw2"));
+    square2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square2"));
+    triangle2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle2"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -104,11 +118,20 @@ void SimpleSynthAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    synth.setCurrentPlaybackSampleRate(sampleRate);
+    synth1.setCurrentPlaybackSampleRate(sampleRate);
+    synth2.setCurrentPlaybackSampleRate(sampleRate);
     
-    for (int i = 0; i < synth.getNumVoices(); ++i)
+    for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
-        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
+        {
+            voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+        }
+    }
+
+    for (int i = 0; i < synth2.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
         {
             voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
         }
@@ -156,15 +179,26 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    for (int i = 0; i < synth.getNumVoices(); ++i)
-    {
-        if (auto voice = dynamic_cast<juce::SynthesiserVoice*>(synth.getVoice(i)))
-        {
+    wavetype1[0] = sine1->get();
+    wavetype1[1] = saw1->get();
+    wavetype1[2] = square1->get();
+    wavetype1[3] = triangle1->get();
 
+    wavetype2[0] = sine2->get();
+    wavetype2[1] = saw2->get();
+    wavetype2[2] = square2->get();
+    wavetype2[3] = triangle2->get();
+
+    for (int i = 0; i < synth1.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
+        {
+            voice->getOscillator().setWaveType(wavetype1);
         }
     }
 
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
@@ -207,10 +241,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     //Global Toggle Switch
     //Global Gain Ouput
 
-    //osc 1 (sin, square, saw, triangle, ramp(offset Saw?)
+    //osc 1 
     layout.add(std::make_unique<AudioParameterBool>("sine1", "Osc 1 Sine Wave", true));
     layout.add(std::make_unique<AudioParameterBool>("saw1", "Osc 1 Saw Wave", false));
-    layout.add(std::make_unique<AudioParameterBool>("square1", "Osc 1 Sauare Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("square1", "Osc 1 Square Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("triangle1", "Osc 1 Triangle Wave", false));
 
     layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("decay1", "Osc 1 Decay", range, .05));
@@ -219,11 +254,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("oscGain1", "Osc 1 Gain", gainRange, -6));
 
     //osc 2
-    //ADSR A2
-    //ADSR D2
-    //ADSR S2
-    //ADSR R2
-    //gain 2
+    layout.add(std::make_unique<AudioParameterBool>("sine2", "Osc 2 Sine Wave", true));
+    layout.add(std::make_unique<AudioParameterBool>("saw2", "Osc 2 Saw Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("square2", "Osc 2 Square Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("triangle2", "Osc 2 Triangle Wave", false));
+
+    layout.add(std::make_unique<AudioParameterFloat>("attack2", "Osc 2 Attack", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("decay2", "Osc 2 Decay", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", susRange, .5));
+    layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
     //FM Freq
     //FM Depth

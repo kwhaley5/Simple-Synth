@@ -13,8 +13,7 @@
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    addAndMakeVisible(oscComp1);
-    addAndMakeVisible(oscComp2);
+    addAndMakeVisible(oscComp);
 
     setSize (1000, 800);
 }
@@ -64,9 +63,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto filterBounds = bounds.removeFromTop(bounds.getHeight() * .47);
 
     auto oscsBounds = filterBounds.removeFromLeft(filterBounds.getWidth() * .66);
-    auto osc1Bounds = oscsBounds.removeFromLeft(oscsBounds.getWidth() * .5);
-    oscComp1.setBounds(osc1Bounds);
-    oscComp2.setBounds(oscsBounds);
+    oscComp.setBounds(oscsBounds);
 
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
 

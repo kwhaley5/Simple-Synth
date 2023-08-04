@@ -9,3 +9,12 @@
 */
 
 #pragma once
+#include <JuceHeader.h>
+
+struct oscData : public juce::dsp::Oscillator<float>
+{
+    oscData();
+    ~oscData();
+
+    void setWaveType(std::array<bool, 4>&);
+};

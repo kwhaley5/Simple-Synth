@@ -11,6 +11,8 @@
 #pragma once
 #include <JuceHeader.h>
 #include "SynthSound.h"
+#include "DSP/oscData.h"
+#include <math.h>
 
 struct SynthVoice : public juce::SynthesiserVoice
 {
@@ -22,9 +24,11 @@ struct SynthVoice : public juce::SynthesiserVoice
     void renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int startSample, int numSamples) override;
 
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
+    oscData& getOscillator() { return osc; }
 
 private:
-    juce::dsp::Oscillator<float> osc{ [](float x) {return std::sin(x); } };
+    oscData osc;
+    //juce::dsp::Oscillator<float> osc{ [](float x) {return std::sin(x); } };
     juce::AudioBuffer<float> synthBuffer;
     juce::dsp::Gain<float> oscGain;
 
@@ -33,5 +37,5 @@ private:
 
     // x / juce::MathConstants<float>::pi; //Saw Wave
     // x <0.0f ? -1.f : 1.f; //Square Wave
-
+    // std::asin(std::cos(x))/juce::MathConstants<float>::halfPi //Triangle
 };
