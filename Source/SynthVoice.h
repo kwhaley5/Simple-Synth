@@ -25,6 +25,7 @@ struct SynthVoice : public juce::SynthesiserVoice
 
 private:
     juce::dsp::Oscillator<float> osc{ [](float x) {return std::sin(x); } };
+    juce::AudioBuffer<float> synthBuffer;
     juce::dsp::Gain<float> oscGain;
 
     juce::ADSR adsr;

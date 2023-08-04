@@ -65,6 +65,15 @@ public:
 private:
 
     juce::Synthesiser synth;
+    juce::AudioParameterFloat* attack1{nullptr};
+    juce::AudioParameterFloat* decay1{nullptr};
+    juce::AudioParameterFloat* sustain1{nullptr};
+    juce::AudioParameterFloat* release1{nullptr};
+    juce::AudioParameterFloat* oscGain1{nullptr};
+
+    juce::AudioParameterBool* sine1{nullptr};
+    juce::AudioParameterBool* saw1{nullptr};
+    juce::AudioParameterBool* square1{nullptr};
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)

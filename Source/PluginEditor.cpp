@@ -13,8 +13,9 @@
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    addAndMakeVisible(oscComp1);
+    addAndMakeVisible(oscComp2);
+
     setSize (1000, 800);
 }
 
@@ -41,7 +42,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawRect(filter);
     g.drawFittedText("Filter", filter, juce::Justification::centred, 1);
     g.drawRect(oscs);
-    g.drawFittedText("Oscilators", oscs, juce::Justification::centred, 1);
+    //g.drawFittedText("Oscilators", oscs, juce::Justification::centred, 1);
 
     auto lfos = bounds.removeFromTop(bounds.getHeight() * .7);
     g.drawRect(lfos);
@@ -55,6 +56,20 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
 
 void SimpleSynthAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+
+    auto bounds = getLocalBounds();
+    
+    auto globalControlsBounds = bounds.removeFromTop(bounds.getHeight() * .05);
+
+    auto filterBounds = bounds.removeFromTop(bounds.getHeight() * .47);
+
+    auto oscsBounds = filterBounds.removeFromLeft(filterBounds.getWidth() * .66);
+    auto osc1Bounds = oscsBounds.removeFromLeft(oscsBounds.getWidth() * .5);
+    oscComp1.setBounds(osc1Bounds);
+    oscComp2.setBounds(oscsBounds);
+
+    auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
+
+    auto keyboardBounds = bounds;
+
 }

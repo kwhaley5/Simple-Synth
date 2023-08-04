@@ -4,12 +4,17 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturer="KiTiK Music">
   <MAINGROUP id="nsg0uI" name="SimpleSynth">
-    <GROUP id="{6930AB7F-C14A-F0EC-A91E-1CFE882725EB}" name="DSP"/>
-    <GROUP id="{D0DDF8CE-E146-BD1F-73FE-ED7869BBD4A6}" name="GUI">
-      <FILE id="XYZLui" name="KiTiKLNF.h" compile="0" resource="0" file="../SimpleReverb/Source/KiTiKLNF.h"/>
-      <FILE id="M8Mxwb" name="KiTiKLNF.cpp" compile="1" resource="0" file="../SimpleReverb/Source/KiTiKLNF.cpp"/>
-    </GROUP>
     <GROUP id="{FFEEB3B7-0063-789B-25B0-8845512DC57E}" name="Source">
+      <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
+        <FILE id="kK3IrG" name="oscData.h" compile="0" resource="0" file="Source/DSP/oscData.h"/>
+        <FILE id="lqwljV" name="oscData.cpp" compile="1" resource="0" file="Source/DSP/oscData.cpp"/>
+      </GROUP>
+      <GROUP id="{4A5F8667-0A5B-0839-A7E4-0E133E4E50C9}" name="GUI">
+        <FILE id="FrKxlV" name="KiTiKLNF.h" compile="0" resource="0" file="Source/GUI/KiTiKLNF.h"/>
+        <FILE id="wFLlhc" name="KiTiKLNF.cpp" compile="1" resource="0" file="Source/GUI/KiTiKLNF.cpp"/>
+        <FILE id="YhHWh0" name="osc.h" compile="0" resource="0" file="Source/GUI/osc.h"/>
+        <FILE id="qrWjAM" name="osc.cpp" compile="1" resource="0" file="Source/GUI/osc.cpp"/>
+      </GROUP>
       <FILE id="axmn4s" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
       <FILE id="THyKXa" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
       <FILE id="VlZRL8" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>

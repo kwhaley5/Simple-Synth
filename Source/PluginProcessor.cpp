@@ -24,6 +24,15 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 {
     synth.addSound(new SynthSound());
     synth.addVoice(new SynthVoice());
+
+    attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack1"));
+    decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay1"));
+    sustain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("sustain1"));
+    release1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("release1"));
+    oscGain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("oscGain1"));
+    sine1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("sine1"));
+    saw1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw1"));
+    square1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square1"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -191,15 +200,23 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     using namespace juce;
     AudioProcessorValueTreeState::ParameterLayout layout;
 
+    auto range = NormalisableRange<float>(0, 5, .001, .7);
+    auto susRange = NormalisableRange<float>(0, 1, .01, 1);
+    auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
+
     //Global Toggle Switch
     //Global Gain Ouput
 
     //osc 1 (sin, square, saw, triangle, ramp(offset Saw?)
-    //ADSR A1
-    //ADSR D1
-    //ADSR S1
-    //ADSR R2
-    //gain 1
+    layout.add(std::make_unique<AudioParameterBool>("sine1", "Osc 1 Sine Wave", true));
+    layout.add(std::make_unique<AudioParameterBool>("saw1", "Osc 1 Saw Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("square1", "Osc 1 Sauare Wave", false));
+
+    layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("decay1", "Osc 1 Decay", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", susRange, 1));
+    layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("oscGain1", "Osc 1 Gain", gainRange, -6));
 
     //osc 2
     //ADSR A2
