@@ -24,6 +24,8 @@ struct SynthVoice : public juce::SynthesiserVoice
     void renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int startSample, int numSamples) override;
 
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
+    void setADSR(float attack, float decay, float sustain, float release);
+    void setGain(float gain);
     oscData& getOscillator() { return osc; }
 
 private:

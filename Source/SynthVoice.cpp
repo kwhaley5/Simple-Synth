@@ -24,6 +24,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
     adsr.noteOff();
+    adsr.reset();
     if (!allowTailOff || adsr.isActive())
         clearCurrentNote();
 }
@@ -76,6 +77,19 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     oscGain.prepare(spec);
 
     oscGain.setGainLinear(.1f);
+}
 
-    
+void SynthVoice::setADSR(float attack, float decay, float sustain, float release)
+{
+    adsrParams.attack = attack;
+    adsrParams.decay = decay;
+    adsrParams.sustain = sustain;
+    adsrParams.release = release;
+
+    adsr.setParameters(adsrParams);
+}
+
+void SynthVoice::setGain(float gain)
+{
+    oscGain.setGainDecibels(gain);
 }

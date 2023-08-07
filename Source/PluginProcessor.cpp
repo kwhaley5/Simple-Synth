@@ -193,7 +193,19 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
+            voice->setADSR(attack1->get(), decay1->get(), sustain1->get(), release1->get());
             voice->getOscillator().setWaveType(wavetype1);
+            //voice->setGain(oscGain1->get());
+        }
+    }
+
+    for (int i = 0; i < synth2.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
+        {
+            voice->setADSR(attack2->get(), decay2->get(), sustain2->get(), release2->get());
+            voice->getOscillator().setWaveType(wavetype2);
+            //voice->setGain(oscGain1->get());
         }
     }
 
@@ -247,7 +259,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterBool>("square1", "Osc 1 Square Wave", false));
     layout.add(std::make_unique<AudioParameterBool>("triangle1", "Osc 1 Triangle Wave", false));
 
-    layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .05));
+    layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .5));
     layout.add(std::make_unique<AudioParameterFloat>("decay1", "Osc 1 Decay", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", susRange, 1));
     layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .05));
