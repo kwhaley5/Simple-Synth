@@ -30,6 +30,5 @@ private:
     oscData osc;
     adsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
-    juce::dsp::Gain<float> oscGain;
 
 };

@@ -11,14 +11,11 @@
 #include "oscData.h"
 #include "../PluginProcessor.h"
 
-oscData::oscData()
+void oscData::prepareToPlay(juce::dsp::ProcessSpec& spec)
 {
-
-}
-
-oscData::~oscData()
-{
-
+    prepare(spec);
+    oscGain.prepare(spec);
+    oscGain.setGainLinear(.1f);
 }
 
 void oscData::setWaveType(std::array<bool, 4>& array)
@@ -31,6 +28,22 @@ void oscData::setWaveType(std::array<bool, 4>& array)
         initialise([](float x) { return x < 0.0f ? -1.f : 1.f; });
     else
         initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
+}
+
+void oscData::setWaveFreq(int midiNoteNumber)
+{
+    setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+}
+
+void oscData::processNextBlock(juce::dsp::ProcessContextReplacing<float>& context)
+{
+    process(context);
+    oscGain.process(context);
+}
+
+void oscData::setGain(float gain)
+{
+    oscGain.setGainDecibels(gain);
 }
 
 void adsrData::setADSR(float attack, float decay, float sustain, float release)

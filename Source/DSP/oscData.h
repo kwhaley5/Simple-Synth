@@ -13,10 +13,14 @@
 
 struct oscData : public juce::dsp::Oscillator<float>
 {
-    oscData();
-    ~oscData();
-
+    void prepareToPlay(juce::dsp::ProcessSpec& spec);
     void setWaveType(std::array<bool, 4>&);
+    void setWaveFreq(int midiNoteNumber);
+    void processNextBlock(juce::dsp::ProcessContextReplacing<float>&);
+    void setGain(float gain);
+
+private:
+    juce::dsp::Gain<float> oscGain;
 };
 
 struct adsrData : public juce::ADSR 
