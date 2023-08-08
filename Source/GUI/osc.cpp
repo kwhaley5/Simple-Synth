@@ -19,7 +19,8 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     sineAT1(apvts, "sine1", sine1), sineAT2(apvts, "sine2", sine2),
     sawAT1(apvts, "saw1", saw1), sawAT2(apvts, "saw2", saw2),
     squareAT1(apvts, "square1", square1), squareAT2(apvts, "square2", square2),
-    triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2)
+    triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
+    fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth)
 {
     setLookAndFeel(&lnf);
 
@@ -27,7 +28,7 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     setSlider(decay1);
     setSlider(sustain1);
     setSlider(release1);
-    setRotarySlider(gain1);
+    setHorzSlider(gain1);
 
     addAndMakeVisible(sine1);
     addAndMakeVisible(saw1);
@@ -48,7 +49,7 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     setSlider(decay2);
     setSlider(sustain2);
     setSlider(release2);
-    setRotarySlider(gain2);
+    setHorzSlider(gain2);
 
     addAndMakeVisible(sine2);
     addAndMakeVisible(saw2);
@@ -64,6 +65,11 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     saw2.setRadioGroupId(2);
     square2.setRadioGroupId(2);
     triangle2.setRadioGroupId(2);
+
+    fmOsc.setButtonText("FM");
+    addAndMakeVisible(fmOsc);
+    //add logic to switch type maybe
+    setRotarySlider(fmDepth);
 }
 
 OscComp::~OscComp()
@@ -73,14 +79,18 @@ OscComp::~OscComp()
 
 void OscComp::paint(juce::Graphics& g)
 {
+    g.setColour(juce::Colours::white);
     auto bounds = getLocalBounds().reduced(5);
     auto boundsLeft = bounds.removeFromLeft(bounds.getWidth() * .5);
     auto boundsRight = bounds;
+    g.drawRect(boundsRight);
 
     auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .4).reduced(5);
     auto adsrBounds = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto waveTypeBounds = bounds.removeFromBottom(bounds.getHeight() * .166);
     auto gainBounds = bounds.removeFromBottom(bounds.getHeight() * .2);
+
+    g.setColour(juce::Colours::black);
 
     g.fillRect(oscPicture);
     g.setColour(juce::Colours::white);
@@ -89,6 +99,7 @@ void OscComp::paint(juce::Graphics& g)
     g.setColour(juce::Colours::black);
 
     auto oscPictureR = boundsRight.removeFromTop(boundsRight.getHeight() * .4).reduced(5);
+    oscPictureR = oscPictureR.removeFromRight(oscPictureR.getWidth() * .8);
     auto adsrBounds2 = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto waveTypeBounds2 = bounds.removeFromBottom(bounds.getHeight() * .166);
     auto gainBounds2 = bounds.removeFromBottom(bounds.getHeight() * .2);
@@ -133,6 +144,11 @@ void OscComp::resized()
     auto gainBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .2);
     gain2.setBounds(gainBounds2);
 
+    auto fmBounds = boundsRight.removeFromLeft(boundsRight.getWidth() * .2);
+    auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);
+    fmOsc.setBounds(fmOscBounds);
+    fmDepth.setBounds(fmBounds);
+
     auto sineBounds2 = waveTypeBounds2.removeFromLeft(waveTypeBounds2.getWidth() * .25);
     sine2.setBounds(sineBounds2);
     auto sawBounds2 = waveTypeBounds2.removeFromLeft(waveTypeBounds2.getWidth() * .33);
@@ -161,9 +177,17 @@ void OscComp::setSlider(juce::Slider& slider)
     addAndMakeVisible(slider);
 }
 
-void OscComp::setRotarySlider(juce::Slider& slider)
+void OscComp::setHorzSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearHorizontal);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setName(slider.getComponentID());
+    addAndMakeVisible(slider);
+}
+
+void OscComp::setRotarySlider(juce::Slider& slider)
+{
+    slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
     slider.setName(slider.getComponentID());
     addAndMakeVisible(slider);

@@ -21,6 +21,7 @@ struct OscComp : public juce::Component
     void resized() override;
 
     void setSlider(juce::Slider&);
+    void setHorzSlider(juce::Slider&);
     void setRotarySlider(juce::Slider&);
     void updateToggleState(juce::Button*);
 
@@ -49,6 +50,11 @@ private:
     juce::AudioProcessorValueTreeState::SliderAttachment attackAT2, decayAT2, sustainAT2, releaseAT2;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT2;
     juce::AudioProcessorValueTreeState::ButtonAttachment sineAT2, squareAT2, sawAT2, triangleAT2;
+
+    juce::ToggleButton fmOsc;
+    juce::Slider fmDepth;
+    juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
+    juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
 };

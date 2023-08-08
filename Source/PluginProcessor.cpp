@@ -47,6 +47,9 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     saw2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw2"));
     square2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square2"));
     triangle2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle2"));
+
+    fmOsc = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("fmOsc"));
+    fmDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("fmDepth"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -193,9 +196,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
-            voice->setADSR(attack1->get(), decay1->get(), sustain1->get(), release1->get());
+            voice->update(attack1->get(), decay1->get(), sustain1->get(), release1->get(), oscGain1->get());
             voice->getOscillator().setWaveType(wavetype1);
-            //voice->setGain(oscGain1->get());
         }
     }
 
@@ -203,14 +205,17 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
         {
-            voice->setADSR(attack2->get(), decay2->get(), sustain2->get(), release2->get());
+            voice->update(attack2->get(), decay2->get(), sustain2->get(), release2->get(), oscGain2->get());
             voice->getOscillator().setWaveType(wavetype2);
-            //voice->setGain(oscGain1->get());
         }
     }
 
     synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+
+    //for FM (I think):
+        //Set freq will be via the midi note
+        //the Depth will be the user dial.
 }
 
 //==============================================================================
@@ -249,6 +254,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto range = NormalisableRange<float>(0, 5, .001, .7);
     auto susRange = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
+    auto fmRange = NormalisableRange<float>(0, 1000, 1, 1);
 
     //Global Toggle Switch
     //Global Gain Ouput
@@ -277,8 +283,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
-    //FM Freq
-    //FM Depth
+    layout.add(std::make_unique<AudioParameterBool>("fmOsc", "FM from Osc 2", false));
+    layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));
 
     //Filter
     //Ladder Filter

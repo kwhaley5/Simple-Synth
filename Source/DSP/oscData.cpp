@@ -32,3 +32,13 @@ void oscData::setWaveType(std::array<bool, 4>& array)
     else
         initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
 }
+
+void adsrData::setADSR(float attack, float decay, float sustain, float release)
+{
+    adsrParams.attack = attack;
+    adsrParams.decay = decay;
+    adsrParams.sustain = sustain;
+    adsrParams.release = release;
+
+    setParameters(adsrParams);
+}

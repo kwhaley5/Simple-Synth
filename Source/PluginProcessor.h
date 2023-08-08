@@ -93,6 +93,9 @@ private:
 
     std::array<bool, 4> wavetype2;
 
+    juce::AudioParameterBool* fmOsc{nullptr};
+    juce::AudioParameterFloat* fmDepth{nullptr};
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
 };

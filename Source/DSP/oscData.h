@@ -18,3 +18,12 @@ struct oscData : public juce::dsp::Oscillator<float>
 
     void setWaveType(std::array<bool, 4>&);
 };
+
+struct adsrData : public juce::ADSR 
+{
+    void setADSR(float attack, float decay, float sustain, float release);
+    
+private:
+
+    juce::ADSR::Parameters adsrParams;
+};

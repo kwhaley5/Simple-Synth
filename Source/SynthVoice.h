@@ -12,7 +12,6 @@
 #include <JuceHeader.h>
 #include "SynthSound.h"
 #include "DSP/oscData.h"
-#include <math.h>
 
 struct SynthVoice : public juce::SynthesiserVoice
 {
@@ -24,20 +23,13 @@ struct SynthVoice : public juce::SynthesiserVoice
     void renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int startSample, int numSamples) override;
 
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
-    void setADSR(float attack, float decay, float sustain, float release);
-    void setGain(float gain);
+    void update(float attack, float decay, float sustain, float release, float gain);
     oscData& getOscillator() { return osc; }
 
 private:
     oscData osc;
-    //juce::dsp::Oscillator<float> osc{ [](float x) {return std::sin(x); } };
+    adsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
     juce::dsp::Gain<float> oscGain;
 
-    juce::ADSR adsr;
-    juce::ADSR::Parameters adsrParams;
-
-    // x / juce::MathConstants<float>::pi; //Saw Wave
-    // x <0.0f ? -1.f : 1.f; //Square Wave
-    // std::asin(std::cos(x))/juce::MathConstants<float>::halfPi //Triangle
 };
