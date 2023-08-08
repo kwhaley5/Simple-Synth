@@ -30,9 +30,13 @@ void oscData::setWaveType(std::array<bool, 4>& array)
         initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
 }
 
-void oscData::setWaveFreq(int midiNoteNumber)
+void oscData::setWaveFreq(int midiNoteNumber, int osc1MidiNoteNumber, bool isFmActive, float depth)
 {
     setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+    if (isFmActive)
+    {
+        setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber) + (juce::MidiMessage::getMidiNoteInHertz(osc1MidiNoteNumber) * depth));
+    };
 }
 
 void oscData::processNextBlock(juce::dsp::ProcessContextReplacing<float>& context)

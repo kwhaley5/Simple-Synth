@@ -207,6 +207,10 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         {
             voice->update(attack2->get(), decay2->get(), sustain2->get(), release2->get(), oscGain2->get());
             voice->getOscillator().setWaveType(wavetype2);
+            if (fmOsc->get())
+            {
+                voice->getOscillator().setWaveFreq(voice->getCurrentlyPlayingNote(), synth1.getVoice(i)->getCurrentlyPlayingNote(), fmOsc->get(), fmDepth->get());
+            }
         }
     }
 
@@ -284,7 +288,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
     layout.add(std::make_unique<AudioParameterBool>("fmOsc", "FM from Osc 2", false));
-    layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", susRange, 0));
 
     //Filter
     //Ladder Filter
