@@ -198,6 +198,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         {
             voice->update(attack1->get(), decay1->get(), sustain1->get(), release1->get(), oscGain1->get());
             voice->getOscillator().setWaveType(wavetype1);
+            if(fmOsc->get())
+                voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), wavetype2);
         }
     }
 
@@ -207,19 +209,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         {
             voice->update(attack2->get(), decay2->get(), sustain2->get(), release2->get(), oscGain2->get());
             voice->getOscillator().setWaveType(wavetype2);
-            if (fmOsc->get())
-            {
-                voice->getOscillator().setWaveFreq(voice->getCurrentlyPlayingNote(), synth1.getVoice(i)->getCurrentlyPlayingNote(), fmOsc->get(), fmDepth->get());
-            }
         }
     }
 
     synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
-    //for FM (I think):
-        //Set freq will be via the midi note
-        //the Depth will be the user dial.
+    //Now I just need to figure out how to do bypass again 
 }
 
 //==============================================================================
@@ -262,6 +258,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
 
     //Global Toggle Switch
     //Global Gain Ouput
+    //bypass synth1
+    //bypass synth 2
 
     //osc 1 
     layout.add(std::make_unique<AudioParameterBool>("sine1", "Osc 1 Sine Wave", true));
@@ -288,7 +286,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
     layout.add(std::make_unique<AudioParameterBool>("fmOsc", "FM from Osc 2", false));
-    layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", susRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));
 
     //Filter
     //Ladder Filter

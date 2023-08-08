@@ -28,7 +28,10 @@ struct SynthVoice : public juce::SynthesiserVoice
 
 private:
     oscData osc;
+    oscData fmOsc;
     adsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
+
+
 
 };

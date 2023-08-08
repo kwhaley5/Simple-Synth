@@ -14,6 +14,7 @@
 void oscData::prepareToPlay(juce::dsp::ProcessSpec& spec)
 {
     prepare(spec);
+    fmOsc.prepare(spec);
     oscGain.prepare(spec);
     oscGain.setGainLinear(.1f);
 }
@@ -32,17 +33,39 @@ void oscData::setWaveType(std::array<bool, 4>& array)
 
 void oscData::setWaveFreq(int midiNoteNumber, int osc1MidiNoteNumber, bool isFmActive, float depth)
 {
-    setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
-    if (isFmActive)
-    {
-        setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber) + (juce::MidiMessage::getMidiNoteInHertz(osc1MidiNoteNumber) * depth));
-    };
+    setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber) + fmMod);
+    lastMidiNote = midiNoteNumber;
 }
 
 void oscData::processNextBlock(juce::dsp::ProcessContextReplacing<float>& context)
 {
+    for (int ch = 0; ch < context.getOutputBlock().getNumChannels(); ++ch)
+    {
+        for (int s = 0; s < context.getOutputBlock().getNumSamples(); ++s)
+        {
+            fmMod = fmOsc.processSample(context.getOutputBlock().getSample(ch, s)) * fmDepth;
+        }
+    }
+
     process(context);
     oscGain.process(context);
+}
+
+void oscData::setFmParams(float freq, float depth, std::array<bool, 4>& array)
+{
+    if (array[0])
+        fmOsc.initialise([](float x) { return std::sin(x); });
+    else if (array[1])
+        fmOsc.initialise([](float x) { return x / juce::MathConstants<float>::pi; });
+    else if (array[2])
+        fmOsc.initialise([](float x) { return x < 0.0f ? -1.f : 1.f; });
+    else
+        fmOsc.initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
+
+    fmOsc.setFrequency(juce::MidiMessage::getMidiNoteInHertz(freq));
+    fmDepth = depth;
+    auto currentFreq = juce::MidiMessage::getMidiNoteInHertz(lastMidiNote) + fmMod;
+    setFrequency(currentFreq >= 0 ? currentFreq : currentFreq * -1.0f);
 }
 
 void oscData::setGain(float gain)
