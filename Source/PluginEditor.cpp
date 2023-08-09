@@ -14,6 +14,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     addAndMakeVisible(oscComp);
+    addAndMakeVisible(filterComp);
 
     setSize (1000, 800);
 }
@@ -39,7 +40,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     auto filter = bounds.removeFromTop(bounds.getHeight() * .47);
     auto oscs = filter.removeFromLeft(bounds.getWidth() * .66);
     g.drawRect(filter);
-    g.drawFittedText("Filter", filter, juce::Justification::centred, 1);
+    //g.drawFittedText("Filter", filter, juce::Justification::centred, 1);
     g.drawRect(oscs);
     //g.drawFittedText("Oscilators", oscs, juce::Justification::centred, 1);
 
@@ -61,9 +62,9 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto globalControlsBounds = bounds.removeFromTop(bounds.getHeight() * .05);
 
     auto filterBounds = bounds.removeFromTop(bounds.getHeight() * .47);
-
     auto oscsBounds = filterBounds.removeFromLeft(filterBounds.getWidth() * .66);
     oscComp.setBounds(oscsBounds);
+    filterComp.setBounds(filterBounds);
 
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
 

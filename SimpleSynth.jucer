@@ -6,10 +6,14 @@
   <MAINGROUP id="nsg0uI" name="SimpleSynth">
     <GROUP id="{FFEEB3B7-0063-789B-25B0-8845512DC57E}" name="Source">
       <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
+        <FILE id="kIIoNV" name="filterData.cpp" compile="1" resource="0" file="Source/DSP/filterData.cpp"/>
+        <FILE id="qzL5l5" name="filterData.h" compile="0" resource="0" file="Source/DSP/filterData.h"/>
         <FILE id="kK3IrG" name="oscData.h" compile="0" resource="0" file="Source/DSP/oscData.h"/>
         <FILE id="lqwljV" name="oscData.cpp" compile="1" resource="0" file="Source/DSP/oscData.cpp"/>
       </GROUP>
       <GROUP id="{4A5F8667-0A5B-0839-A7E4-0E133E4E50C9}" name="GUI">
+        <FILE id="S7qXiO" name="filter.cpp" compile="1" resource="0" file="Source/GUI/filter.cpp"/>
+        <FILE id="nD7GJn" name="filter.h" compile="0" resource="0" file="Source/GUI/filter.h"/>
         <FILE id="FrKxlV" name="KiTiKLNF.h" compile="0" resource="0" file="Source/GUI/KiTiKLNF.h"/>
         <FILE id="wFLlhc" name="KiTiKLNF.cpp" compile="1" resource="0" file="Source/GUI/KiTiKLNF.cpp"/>
         <FILE id="YhHWh0" name="osc.h" compile="0" resource="0" file="Source/GUI/osc.h"/>

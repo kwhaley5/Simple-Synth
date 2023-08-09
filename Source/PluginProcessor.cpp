@@ -50,6 +50,12 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
     fmOsc = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("fmOsc"));
     fmDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("fmDepth"));
+
+    ladderChoice = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("ladderChoice"));
+    ladderFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderFreq"));
+    ladderRes = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderRes"));
+    ladderDrive = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderDrive"));
+
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -139,6 +145,8 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
             voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
         }
     }
+
+    ladderFilter.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -215,6 +223,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
+    ladderFilter.updateParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
+    ladderFilter.process(buffer);
+
     //Now I just need to figure out how to do bypass again 
 }
 
@@ -255,6 +266,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto susRange = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
     auto fmRange = NormalisableRange<float>(0, 1000, 1, 1);
+    auto freqRange = NormalisableRange<float>(20, 20000, 1, 1);
+    auto resRange = NormalisableRange<float>(0, 1, .01, 1);
+    auto driveRange = NormalisableRange<float>(1, 10, .1, 1);
+
+    auto ladderFilterTypes = juce::StringArray{ "LP12", "HP12", "BP12", "LP24", "HP24", "BP24" };
 
     //Global Toggle Switch
     //Global Gain Ouput
@@ -289,11 +305,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));
 
     //Filter
-    //Ladder Filter
-        //Freq
-        //res
-        //drive
-        //mix?
+    layout.add(std::make_unique<AudioParameterChoice>("ladderChoice", "Ladder Filter Types", ladderFilterTypes, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("ladderFreq", "Ladder Frequency", freqRange, 100));
+    layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", resRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("ladderDrive", "Ladder Drive", driveRange, 1));
     //comb
         //freq
         //res

@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "GUI/osc.h"
+#include "GUI/filter.h"
 
 //==============================================================================
 /**
@@ -29,6 +30,7 @@ private:
     SimpleSynthAudioProcessor& audioProcessor;
 
     OscComp oscComp{audioProcessor.apvts};
+    FilterComp filterComp{ audioProcessor.apvts };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
 };

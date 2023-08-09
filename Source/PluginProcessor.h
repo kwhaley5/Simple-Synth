@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "SynthSound.h"
 #include "SynthVoice.h"
+#include "DSP/filterData.h"
 
 //==============================================================================
 /**
@@ -66,6 +67,7 @@ private:
 
     juce::Synthesiser synth1;
     juce::Synthesiser synth2;
+    FilterData ladderFilter;
 
     juce::AudioParameterFloat* attack1{nullptr};
     juce::AudioParameterFloat* decay1{nullptr};
@@ -95,6 +97,11 @@ private:
 
     juce::AudioParameterBool* fmOsc{nullptr};
     juce::AudioParameterFloat* fmDepth{nullptr};
+
+    juce::AudioParameterChoice* ladderChoice{nullptr};
+    juce::AudioParameterFloat* ladderFreq{nullptr};
+    juce::AudioParameterFloat* ladderRes{nullptr};
+    juce::AudioParameterFloat* ladderDrive{nullptr};
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
