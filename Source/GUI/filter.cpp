@@ -42,6 +42,12 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
     setRotarySlider(phaserFeedback);
     setRotarySlider(phaserMix);
 
+    phaserRate.setVisible(false);
+    phaserDepth.setVisible(false);
+    phaserCenterFreq.setVisible(false);
+    phaserFeedback.setVisible(false);
+    phaserMix.setVisible(false);
+
     filterType.onChange = [this]()
     {
         if (filterType.getSelectedId() == 1)
@@ -49,6 +55,7 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             ladderFreq.setVisible(true);
             ladderRes.setVisible(true);
             ladderDrive.setVisible(true);
+            ladderMode.setVisible(true);
 
             phaserRate.setVisible(false);
             phaserDepth.setVisible(false);
@@ -61,6 +68,7 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             ladderFreq.setVisible(false);
             ladderRes.setVisible(false);
             ladderDrive.setVisible(false);
+            ladderMode.setVisible(false);
 
             phaserRate.setVisible(true);
             phaserDepth.setVisible(true);
@@ -87,32 +95,31 @@ void FilterComp::resized()
     auto dialArea = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto dialAreaPhaser = dialArea;
     auto comboArea = bounds.removeFromBottom(bounds.getHeight() * .167);
+    auto comboFill = comboArea;
     auto filterTypeArea = comboArea.removeFromLeft(comboArea.getWidth() * .5);
     filterType.setBounds(filterTypeArea);
     ladderMode.setBounds(comboArea);
+    if (ladderMode.isVisible())
+        filterType.setBounds(comboFill);
 
-    if (filterType.getSelectedId() == 1)
-    {
-        auto freqArea = dialArea.removeFromLeft(dialArea.getWidth() * .33);
-        ladderFreq.setBounds(freqArea);
-        auto resArea = dialArea.removeFromLeft(dialArea.getWidth() * .5);
-        ladderRes.setBounds(resArea);
-        auto driveArea = dialArea.removeFromLeft(dialArea.getWidth());
-        ladderDrive.setBounds(driveArea);
-    }
-    else if (filterType.getSelectedId() == 2)
-    {
-        auto rateArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .2);
-        phaserRate.setBounds(rateArea);
-        auto depthArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .25);
-        phaserDepth.setBounds(depthArea);
-        auto centerFreqArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .33);
-        phaserCenterFreq.setBounds(centerFreqArea);
-        auto feedbackArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .5);
-        phaserFeedback.setBounds(feedbackArea);
-        auto mixArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth());
-        phaserMix.setBounds(mixArea);
-    }
+    auto freqArea = dialArea.removeFromLeft(dialArea.getWidth() * .33);
+    ladderFreq.setBounds(freqArea);
+    auto resArea = dialArea.removeFromLeft(dialArea.getWidth() * .5);
+    ladderRes.setBounds(resArea);
+    auto driveArea = dialArea.removeFromLeft(dialArea.getWidth());
+    ladderDrive.setBounds(driveArea);
+
+    auto rateArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .2);
+    phaserRate.setBounds(rateArea);
+    auto depthArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .25);
+    phaserDepth.setBounds(depthArea);
+    auto centerFreqArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .33);
+    phaserCenterFreq.setBounds(centerFreqArea);
+    auto feedbackArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth() * .5);
+    phaserFeedback.setBounds(feedbackArea);
+    auto mixArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth());
+    phaserMix.setBounds(mixArea);
+    
 }
 
 void FilterComp::setRotarySlider(juce::Slider& slider)
