@@ -67,7 +67,7 @@ private:
 
     juce::Synthesiser synth1;
     juce::Synthesiser synth2;
-    FilterData ladderFilter;
+    FilterData filters;
 
     juce::AudioParameterFloat* attack1{nullptr};
     juce::AudioParameterFloat* decay1{nullptr};
@@ -98,10 +98,18 @@ private:
     juce::AudioParameterBool* fmOsc{nullptr};
     juce::AudioParameterFloat* fmDepth{nullptr};
 
+    juce::AudioParameterChoice* filterType{ nullptr };
+
     juce::AudioParameterChoice* ladderChoice{nullptr};
     juce::AudioParameterFloat* ladderFreq{nullptr};
     juce::AudioParameterFloat* ladderRes{nullptr};
     juce::AudioParameterFloat* ladderDrive{nullptr};
+
+    juce::AudioParameterFloat* phaserRate{ nullptr };
+    juce::AudioParameterFloat* phaserDepth{ nullptr };
+    juce::AudioParameterFloat* phaserCenterFreq{ nullptr };
+    juce::AudioParameterFloat* phaserFeedback{ nullptr };
+    juce::AudioParameterFloat* phaserMix{ nullptr };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)

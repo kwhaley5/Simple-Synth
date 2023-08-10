@@ -13,6 +13,7 @@
 void FilterData::prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels)
 {
     ladderFilter.reset();
+    phaserFilter.reset();
 
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
@@ -20,6 +21,7 @@ void FilterData::prepareToPlay(double sampleRate, int samplesPerBlock, int numCh
     spec.numChannels = numChannels;
 
     ladderFilter.prepare(spec);
+    phaserFilter.prepare(spec);
 }
 
 void FilterData::process(juce::AudioBuffer<float>& buffer)
@@ -28,9 +30,10 @@ void FilterData::process(juce::AudioBuffer<float>& buffer)
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
     ladderFilter.process(context);
+    phaserFilter.process(context);
 }
 
-void FilterData::updateParams(int mode, float cuttoffFreq, float resonance, float drive)
+void FilterData::updateLadderParams(int mode, float cuttoffFreq, float resonance, float drive)
 {
     switch (mode)
     {
@@ -60,7 +63,17 @@ void FilterData::updateParams(int mode, float cuttoffFreq, float resonance, floa
 
 }
 
+void FilterData::updatePhaserParams(float rate, float depth, float centerFreq, float feedback, float mix)
+{
+    phaserFilter.setRate(rate);
+    phaserFilter.setDepth(depth);
+    phaserFilter.setCentreFrequency(centerFreq);
+    phaserFilter.setFeedback(feedback);
+    phaserFilter.setMix(mix);
+}
+
 void FilterData::reset()
 {
     ladderFilter.reset();
+    phaserFilter.reset();
 }

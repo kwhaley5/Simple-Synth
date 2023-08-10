@@ -28,9 +28,14 @@ struct FilterComp : public juce::Component
 private:
     Laf lnf;
 
-    juce::ComboBox ladderMode {"Filter Type"};
-    juce::Slider ladderFreq, ladderRes, ladderDrive;
+    juce::ComboBox filterType{ "Filter Type" };
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> filterTypeAT;
 
+    juce::ComboBox ladderMode {"Ladder Type"};
+    juce::Slider ladderFreq, ladderRes, ladderDrive;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> ladderModeAT;
     juce::AudioProcessorValueTreeState::SliderAttachment ladderFreqAT, ladderResAT, ladderDriveAT;
+
+    juce::Slider phaserRate, phaserDepth, phaserCenterFreq, phaserFeedback, phaserMix;
+    juce::AudioProcessorValueTreeState::SliderAttachment phaserRateAT, phaserDepthAT, phaserCenterFreqAT, phaserFeedbackAT, phaserMixAT;
 };

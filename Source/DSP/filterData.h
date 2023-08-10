@@ -15,9 +15,11 @@ struct FilterData
 {
     void prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels);
     void process(juce::AudioBuffer<float>& buffer);
-    void updateParams(int mode, float cuttoffFreq, float resonance, float drive);
+    void updateLadderParams(int mode, float cuttoffFreq, float resonance, float drive);
+    void updatePhaserParams(float rate, float depth, float centerFreq, float feedback, float mix);
     void reset();
     
 private:
     juce::dsp::LadderFilter<float> ladderFilter;
+    juce::dsp::Phaser<float> phaserFilter;
 };

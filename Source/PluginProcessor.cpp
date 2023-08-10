@@ -51,11 +51,18 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     fmOsc = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("fmOsc"));
     fmDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("fmDepth"));
 
+    filterType = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("filterType"));
+
     ladderChoice = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("ladderChoice"));
     ladderFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderFreq"));
     ladderRes = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderRes"));
     ladderDrive = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderDrive"));
 
+    phaserRate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserRate"));
+    phaserDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserDepth"));
+    phaserCenterFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserCenterFreq"));
+    phaserFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserFeedback"));
+    phaserMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserMix"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -146,7 +153,7 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         }
     }
 
-    ladderFilter.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+    filters.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -223,8 +230,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
-    ladderFilter.updateParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
-    ladderFilter.process(buffer);
+    filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
+    filters.updatePhaserParams(phaserRate->get(), phaserDepth->get(), phaserCenterFreq->get(), phaserFeedback->get(), phaserMix->get());
+    filters.process(buffer);
 
     //Now I just need to figure out how to do bypass again 
 }
@@ -263,13 +271,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     AudioProcessorValueTreeState::ParameterLayout layout;
 
     auto range = NormalisableRange<float>(0, 5, .001, .7);
-    auto susRange = NormalisableRange<float>(0, 1, .01, 1);
+    auto zeroToOne = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
     auto fmRange = NormalisableRange<float>(0, 1000, 1, 1);
     auto freqRange = NormalisableRange<float>(20, 20000, 1, 1);
-    auto resRange = NormalisableRange<float>(0, 1, .01, 1);
     auto driveRange = NormalisableRange<float>(1, 10, .1, 1);
+    auto feedbackRange = NormalisableRange<float>(-1, 1, .01, 1);
+    auto lfoRange = NormalisableRange<float>(.1, 10, .1, 1);
 
+    auto filterTypes = juce::StringArray{ "ladder", "phaser" };
     auto ladderFilterTypes = juce::StringArray{ "LP12", "HP12", "BP12", "LP24", "HP24", "BP24" };
 
     //Global Toggle Switch
@@ -285,7 +295,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
 
     layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .5));
     layout.add(std::make_unique<AudioParameterFloat>("decay1", "Osc 1 Decay", range, .05));
-    layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", susRange, 1));
+    layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", zeroToOne, 1));
     layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain1", "Osc 1 Gain", gainRange, -6));
 
@@ -297,7 +307,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
 
     layout.add(std::make_unique<AudioParameterFloat>("attack2", "Osc 2 Attack", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("decay2", "Osc 2 Decay", range, .05));
-    layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", susRange, .5));
+    layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", zeroToOne, .5));
     layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
@@ -305,20 +315,24 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));
 
     //Filter
+    //Select Filter
+    layout.add(std::make_unique<AudioParameterChoice>("filterType", "Filter Type", filterTypes, 0));
+
+    //Ladder
     layout.add(std::make_unique<AudioParameterChoice>("ladderChoice", "Ladder Filter Types", ladderFilterTypes, 0));
     layout.add(std::make_unique<AudioParameterFloat>("ladderFreq", "Ladder Frequency", freqRange, 100));
-    layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", resRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("ladderDrive", "Ladder Drive", driveRange, 1));
     //comb
         //freq
         //res
         //mix?
     //Phaser
-        //rate
-        // centreFreq
-        // feedback
-        // mix
-        //depth
+    layout.add(std::make_unique<AudioParameterFloat>("phaserRate", "Phaser Rate", lfoRange, 0.1));
+    layout.add(std::make_unique<AudioParameterFloat>("phaserDepth", "Phaser Depth", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("phaserCenterFreq", "Phaser Center Frequency", freqRange, 20));
+    layout.add(std::make_unique<AudioParameterFloat>("phaserFeedback", "Phaser Feedback", feedbackRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("phaserMix", "Phaser Mix", zeroToOne, 0));
 
     //LFO's
         //Rate
