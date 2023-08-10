@@ -62,6 +62,7 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             phaserCenterFreq.setVisible(false);
             phaserFeedback.setVisible(false);
             phaserMix.setVisible(false);
+         
         }
         else if (filterType.getSelectedId() == 2)
         {
@@ -75,6 +76,7 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             phaserCenterFreq.setVisible(true);
             phaserFeedback.setVisible(true);
             phaserMix.setVisible(true);
+            resized();
         }
     };
 }
@@ -95,12 +97,18 @@ void FilterComp::resized()
     auto dialArea = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto dialAreaPhaser = dialArea;
     auto comboArea = bounds.removeFromBottom(bounds.getHeight() * .167);
-    auto comboFill = comboArea;
-    auto filterTypeArea = comboArea.removeFromLeft(comboArea.getWidth() * .5);
-    filterType.setBounds(filterTypeArea);
-    ladderMode.setBounds(comboArea);
-    if (ladderMode.isVisible())
-        filterType.setBounds(comboFill);
+
+    juce::FlexBox flexbox;
+    flexbox.flexDirection = juce::FlexBox::Direction::row;
+    flexbox.flexWrap = juce::FlexBox::Wrap::noWrap;
+
+    flexbox.items.add(juce::FlexItem(filterType).withFlex(1.f));
+    flexbox.items.add(juce::FlexItem(ladderMode).withFlex(1.f));
+
+    if (!ladderMode.isVisible())
+        flexbox.items.removeLast(1);
+    
+    flexbox.performLayout(comboArea);
 
     auto freqArea = dialArea.removeFromLeft(dialArea.getWidth() * .33);
     ladderFreq.setBounds(freqArea);
@@ -126,6 +134,5 @@ void FilterComp::setRotarySlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
-    slider.setName(slider.getComponentID());
     addAndMakeVisible(slider);
 }

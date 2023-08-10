@@ -31,11 +31,17 @@ private:
     juce::ComboBox filterType{ "Filter Type" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> filterTypeAT;
 
-    juce::ComboBox ladderMode {"Ladder Type"};
-    juce::Slider ladderFreq, ladderRes, ladderDrive;
+    juce::ComboBox ladderMode  {"Ladder Type"};
+    juce::Slider   ladderFreq  {"Frequency"}, 
+                   ladderRes   {"Resonance"}, 
+                   ladderDrive { "Drive" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> ladderModeAT;
     juce::AudioProcessorValueTreeState::SliderAttachment ladderFreqAT, ladderResAT, ladderDriveAT;
 
-    juce::Slider phaserRate, phaserDepth, phaserCenterFreq, phaserFeedback, phaserMix;
+    juce::Slider phaserRate       {"Rate"},
+                 phaserDepth      {"Depth"},
+                 phaserCenterFreq {"Frequency"},
+                 phaserFeedback   {"Feedback"}, 
+                 phaserMix        { "Mix" };
     juce::AudioProcessorValueTreeState::SliderAttachment phaserRateAT, phaserDepthAT, phaserCenterFreqAT, phaserFeedbackAT, phaserMixAT;
 };
