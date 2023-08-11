@@ -131,8 +131,15 @@ FilterComp::~FilterComp()
 }
 
 void FilterComp::paint(juce::Graphics& g)
-
 {
+    auto bounds = getLocalBounds();
+    auto dialArea = bounds.removeFromBottom(bounds.getHeight() * .4);
+    auto comboArea = bounds.removeFromBottom(bounds.getHeight() * .167);
+
+    g.setColour(juce::Colours::black);
+    g.fillRect(bounds.reduced(10));
+    g.setColour(juce::Colours::white);
+    g.drawFittedText("Filter Graph Here", bounds, juce::Justification::centred, 1);
 }
 
 void FilterComp::resized()

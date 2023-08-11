@@ -16,6 +16,9 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(oscComp);
     addAndMakeVisible(filterComp);
 
+    keyboard.setKeyWidth(20);
+    addAndMakeVisible(keyboard);
+
     setSize (1000, 800);
 }
 
@@ -26,7 +29,6 @@ SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
 //==============================================================================
 void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     auto bounds = getLocalBounds();
@@ -69,5 +71,17 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
 
     auto keyboardBounds = bounds;
+    keyboard.setBounds(keyboardBounds);
 
+}
+
+void SimpleSynthAudioProcessorEditor::setKeyboard()
+{
+    keyboard.setKeyWidth(25);
+    addAndMakeVisible(keyboard);
+
+    auto bounds = getLocalBounds();
+
+    auto keyboardBounds = bounds.removeFromBottom(bounds.getHeight() * .2);
+    keyboard.setBounds(keyboardBounds);
 }

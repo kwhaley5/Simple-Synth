@@ -12,6 +12,8 @@
         <FILE id="lqwljV" name="oscData.cpp" compile="1" resource="0" file="Source/DSP/oscData.cpp"/>
       </GROUP>
       <GROUP id="{4A5F8667-0A5B-0839-A7E4-0E133E4E50C9}" name="GUI">
+        <FILE id="saU0XV" name="keyboard.cpp" compile="1" resource="0" file="Source/GUI/keyboard.cpp"/>
+        <FILE id="uLo0iT" name="keyboard.h" compile="0" resource="0" file="Source/GUI/keyboard.h"/>
         <FILE id="S7qXiO" name="filter.cpp" compile="1" resource="0" file="Source/GUI/filter.cpp"/>
         <FILE id="nD7GJn" name="filter.h" compile="0" resource="0" file="Source/GUI/filter.h"/>
         <FILE id="FrKxlV" name="KiTiKLNF.h" compile="0" resource="0" file="Source/GUI/KiTiKLNF.h"/>
