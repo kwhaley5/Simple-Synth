@@ -33,8 +33,7 @@ private:
     OscComp oscComp{audioProcessor.apvts};
     FilterComp filterComp{ audioProcessor.apvts };
 
-    juce::MidiKeyboardState keyState;
-    juce::MidiKeyboardComponent keyboard{keyState, juce::KeyboardComponentBase::horizontalKeyboard};
+    juce::MidiKeyboardComponent keyboard{ audioProcessor.keyState, juce::KeyboardComponentBase::horizontalKeyboard};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
 };

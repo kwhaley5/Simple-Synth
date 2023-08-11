@@ -19,6 +19,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     keyboard.setKeyWidth(20);
     addAndMakeVisible(keyboard);
 
+
     setSize (1000, 800);
 }
 

@@ -63,11 +63,15 @@ public:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
+    juce::MidiKeyboardState keyState;
+
 private:
 
     juce::Synthesiser synth1;
     juce::Synthesiser synth2;
     FilterData filters;
+
+    //juce::AudioParameterInt* voices{ nullptr };
 
     juce::AudioParameterFloat* attack1{nullptr};
     juce::AudioParameterFloat* decay1{nullptr};

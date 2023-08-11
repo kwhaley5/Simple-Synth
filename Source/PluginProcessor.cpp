@@ -24,9 +24,17 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 {
     synth1.addSound(new SynthSound());
     synth1.addVoice(new SynthVoice());
+    synth1.addVoice(new SynthVoice());
+    synth1.addVoice(new SynthVoice());
+    synth1.addVoice(new SynthVoice());
 
     synth2.addSound(new SynthSound());
     synth2.addVoice(new SynthVoice());
+    synth2.addVoice(new SynthVoice());
+    synth2.addVoice(new SynthVoice());
+    synth2.addVoice(new SynthVoice());
+
+    //voices = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("voices"));
 
     attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack1"));
     decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay1"));
@@ -195,6 +203,8 @@ bool SimpleSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
+
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -212,10 +222,19 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     wavetype2[2] = square2->get();
     wavetype2[3] = triangle2->get();
 
+    //for (int i = 1; i < voices->get(); ++i)
+    //{
+    //    //synth1.clearVoices();
+    //    //synth2.clearVoices();
+    //    synth1.addVoice(new SynthVoice());
+    //    synth2.addVoice(new SynthVoice());
+    //}
+
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
+            //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             voice->update(attack1->get(), decay1->get(), sustain1->get(), release1->get(), oscGain1->get());
             voice->getOscillator().setWaveType(wavetype1);
             if(fmOsc->get())
@@ -227,6 +246,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
         {
+            //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             voice->update(attack2->get(), decay2->get(), sustain2->get(), release2->get(), oscGain2->get());
             voice->getOscillator().setWaveType(wavetype2);
         }
@@ -242,6 +262,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
         filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
+
+    juce::MidiMessage message;
 
     //filters.reset(filterType->getIndex());
 
@@ -299,6 +321,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     //Global Gain Ouput
     //bypass synth1
     //bypass synth 2
+
+    //layout.add(std::make_unique<AudioParameterInt>("voices", "Synth Voices", 1, 8, 1));
 
     //osc 1 
     layout.add(std::make_unique<AudioParameterBool>("sine1", "Osc 1 Sine Wave", true));
