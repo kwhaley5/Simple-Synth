@@ -38,10 +38,16 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> ladderModeAT;
     juce::AudioProcessorValueTreeState::SliderAttachment ladderFreqAT, ladderResAT, ladderDriveAT;
 
-    juce::Slider phaserRate       {"Rate"},
-                 phaserDepth      {"Depth"},
-                 phaserCenterFreq {"Frequency"},
-                 phaserFeedback   {"Feedback"}, 
-                 phaserMix        { "Mix" };
+    juce::Slider   phaserRate       {"Rate"},
+                   phaserDepth      {"Depth"},
+                   phaserCenterFreq {"Frequency"},
+                   phaserFeedback   {"Feedback"}, 
+                   phaserMix        { "Mix" };
     juce::AudioProcessorValueTreeState::SliderAttachment phaserRateAT, phaserDepthAT, phaserCenterFreqAT, phaserFeedbackAT, phaserMixAT;
+
+    juce::Slider   combFreq     { "Frequency" },
+                   combFeedback { "Feedback" },
+                   combGain     { "Gain" },
+                   combMix      { "Mix" };
+    juce::AudioProcessorValueTreeState::SliderAttachment combFreqAT, combFeeedbackAT, combGainAT, combMixAT;
 };

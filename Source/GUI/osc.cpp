@@ -173,7 +173,6 @@ void OscComp::setSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearVertical);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
-    slider.setName(slider.getComponentID());
     addAndMakeVisible(slider);
 }
 
@@ -181,7 +180,6 @@ void OscComp::setHorzSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearHorizontal);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
-    slider.setName(slider.getComponentID());
     addAndMakeVisible(slider);
 }
 
@@ -189,7 +187,6 @@ void OscComp::setRotarySlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
-    slider.setName(slider.getComponentID());
     addAndMakeVisible(slider);
 }
 

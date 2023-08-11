@@ -18,11 +18,15 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
     phaserDepthAT(apvts, "phaserDepth", phaserDepth),
     phaserCenterFreqAT(apvts, "phaserCenterFreq", phaserCenterFreq),
     phaserFeedbackAT(apvts, "phaserFeedback", phaserFeedback),
-    phaserMixAT(apvts, "phaserMix", phaserMix)
+    phaserMixAT(apvts, "phaserMix", phaserMix), 
+    combFreqAT(apvts, "combFreq", combFreq),
+    combFeeedbackAT(apvts, "combFeedback", combFeedback),
+    combGainAT(apvts, "combGain", combGain),
+    combMixAT(apvts, "combMix", combMix)
 {
     setLookAndFeel(&lnf);
 
-    juce::StringArray choicesFilter{ "Ladder", "Phaser" };
+    juce::StringArray choicesFilter{ "Ladder", "Phaser", "Comb"};
     filterType.addItemList(choicesFilter, 1);
     addAndMakeVisible(filterType);
     filterTypeAT = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(apvts, "filterType", filterType);
@@ -42,11 +46,21 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
     setRotarySlider(phaserFeedback);
     setRotarySlider(phaserMix);
 
+    setRotarySlider(combFreq);
+    setRotarySlider(combFeedback);
+    setRotarySlider(combGain);
+    setRotarySlider(combMix);
+
     phaserRate.setVisible(false);
     phaserDepth.setVisible(false);
     phaserCenterFreq.setVisible(false);
     phaserFeedback.setVisible(false);
     phaserMix.setVisible(false);
+
+    combFreq.setVisible(false);
+    combFeedback.setVisible(false);
+    combGain.setVisible(false);
+    combMix.setVisible(false);
 
     filterType.onChange = [this]()
     {
@@ -62,6 +76,12 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             phaserCenterFreq.setVisible(false);
             phaserFeedback.setVisible(false);
             phaserMix.setVisible(false);
+
+            combFreq.setVisible(false);
+            combFeedback.setVisible(false);
+            combGain.setVisible(false);
+            combMix.setVisible(false);
+            resized();
          
         }
         else if (filterType.getSelectedId() == 2)
@@ -76,6 +96,30 @@ FilterComp::FilterComp(juce::AudioProcessorValueTreeState& apvts) :
             phaserCenterFreq.setVisible(true);
             phaserFeedback.setVisible(true);
             phaserMix.setVisible(true);
+
+            combFreq.setVisible(false);
+            combFeedback.setVisible(false);
+            combGain.setVisible(false);
+            combMix.setVisible(false);
+            resized();
+        }
+        else
+        {
+            ladderFreq.setVisible(false);
+            ladderRes.setVisible(false);
+            ladderDrive.setVisible(false);
+            ladderMode.setVisible(false);
+
+            phaserRate.setVisible(false);
+            phaserDepth.setVisible(false);
+            phaserCenterFreq.setVisible(false);
+            phaserFeedback.setVisible(false);
+            phaserMix.setVisible(false);
+
+            combFreq.setVisible(true);
+            combFeedback.setVisible(true);
+            combGain.setVisible(true);
+            combMix.setVisible(true);
             resized();
         }
     };
@@ -96,6 +140,7 @@ void FilterComp::resized()
     auto bounds = getLocalBounds();
     auto dialArea = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto dialAreaPhaser = dialArea;
+    auto dialAreaComb = dialArea;
     auto comboArea = bounds.removeFromBottom(bounds.getHeight() * .167);
 
     juce::FlexBox flexbox;
@@ -127,7 +172,15 @@ void FilterComp::resized()
     phaserFeedback.setBounds(feedbackArea);
     auto mixArea = dialAreaPhaser.removeFromLeft(dialAreaPhaser.getWidth());
     phaserMix.setBounds(mixArea);
-    
+
+    auto freqAreaComb = dialAreaComb.removeFromLeft(dialAreaComb.getWidth() * .25);
+    combFreq.setBounds(freqAreaComb);
+    auto feedbackAreaComb = dialAreaComb.removeFromLeft(dialAreaComb.getWidth() * .33);
+    combFeedback.setBounds(feedbackAreaComb);
+    auto gainAreaComb = dialAreaComb.removeFromLeft(dialAreaComb.getWidth() * .5);
+    combGain.setBounds(gainAreaComb);
+    auto mixAreaComb = dialAreaComb.removeFromLeft(dialAreaComb.getWidth());
+    combMix.setBounds(mixAreaComb);
 }
 
 void FilterComp::setRotarySlider(juce::Slider& slider)

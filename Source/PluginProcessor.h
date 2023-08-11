@@ -111,6 +111,11 @@ private:
     juce::AudioParameterFloat* phaserFeedback{ nullptr };
     juce::AudioParameterFloat* phaserMix{ nullptr };
 
+    juce::AudioParameterFloat* combFreq{ nullptr };
+    juce::AudioParameterFloat* combFeedback{ nullptr };
+    juce::AudioParameterFloat* combGain{ nullptr };
+    juce::AudioParameterFloat* combMix{ nullptr };
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
 };

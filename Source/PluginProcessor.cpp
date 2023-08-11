@@ -63,6 +63,11 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     phaserCenterFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserCenterFreq"));
     phaserFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserFeedback"));
     phaserMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserMix"));
+
+    combFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combFreq"));
+    combFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combFeedback"));
+    combGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combGain"));
+    combMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combMix"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -232,7 +237,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
     filters.updatePhaserParams(phaserRate->get(), phaserDepth->get(), phaserCenterFreq->get(), phaserFeedback->get(), phaserMix->get());
+
     filters.process(buffer);
+    
+    for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
+        filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
+
+    //filters.reset(filterType->getIndex());
 
     //Now I just need to figure out how to do bypass again 
 }
@@ -278,8 +289,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto driveRange = NormalisableRange<float>(1, 10, .1, 1);
     auto feedbackRange = NormalisableRange<float>(-1, 1, .01, 1);
     auto lfoRange = NormalisableRange<float>(.1, 10, .1, 1);
+    auto combRange = NormalisableRange<float>(1, 75, .1, 1);
+    auto combFreqRange = NormalisableRange<float>(.3, .75, .01, 1);
 
-    auto filterTypes = juce::StringArray{ "ladder", "phaser" };
+    auto filterTypes = juce::StringArray{ "ladder", "phaser", "comb"};
     auto ladderFilterTypes = juce::StringArray{ "LP12", "HP12", "BP12", "LP24", "HP24", "BP24" };
 
     //Global Toggle Switch
@@ -324,9 +337,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("ladderDrive", "Ladder Drive", driveRange, 1));
     //comb
-        //freq
-        //res
-        //mix?
+    layout.add(std::make_unique<AudioParameterFloat>("combFreq", "Comb Filter Frequency", combRange, 20));
+    layout.add(std::make_unique<AudioParameterFloat>("combFeedback", "Comb Filter Feedback", combFreqRange, .3));
+    layout.add(std::make_unique<AudioParameterFloat>("combGain", "Comb Filter Gain", range, 1));
+    layout.add(std::make_unique<AudioParameterFloat>("combMix", "Comb Filter Mix", zeroToOne, 0));
     //Phaser
     layout.add(std::make_unique<AudioParameterFloat>("phaserRate", "Phaser Rate", lfoRange, 0.1));
     layout.add(std::make_unique<AudioParameterFloat>("phaserDepth", "Phaser Depth", zeroToOne, 0));

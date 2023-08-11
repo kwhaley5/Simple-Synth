@@ -22,6 +22,13 @@ void FilterData::prepareToPlay(double sampleRate, int samplesPerBlock, int numCh
 
     ladderFilter.prepare(spec);
     phaserFilter.prepare(spec);
+
+    for (auto& c : combFilter)
+    {
+        c.reset();
+        c.prepare(spec);
+        c.setMaximumDelayInSamples(sampleRate);
+    }
 }
 
 void FilterData::process(juce::AudioBuffer<float>& buffer)
@@ -72,8 +79,36 @@ void FilterData::updatePhaserParams(float rate, float depth, float centerFreq, f
     phaserFilter.setMix(mix);
 }
 
-void FilterData::reset()
+void FilterData::processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate)
 {
-    ladderFilter.reset();
-    phaserFilter.reset();
+    smoothedDelay[channel].setTargetValue(freq/1000);
+
+    auto block = juce::dsp::AudioBlock<float>(buffer);
+    auto context = juce::dsp::ProcessContextReplacing<float>(block);
+
+    auto& inputBlock = context.getInputBlock();
+    auto& ouputBlock = context.getOutputBlock();
+    auto numSamples = ouputBlock.getNumSamples();
+
+    auto* input = inputBlock.getChannelPointer(channel);
+    auto* output = ouputBlock.getChannelPointer(channel);
+
+    for (int i = 0; i < numSamples; i++)
+    {
+        auto nextDelayTime = smoothedDelay[channel].getNextValue() * sampleRate;
+        auto delayedSample = combFilter[channel].popSample(channel, nextDelayTime);
+        auto inDelay = std::tanh(input[i] + feedback * delayedSample);
+        combFilter[channel].pushSample(channel, inDelay);
+        output[i] = (input[i] * (1 - mix)) + (delayedSample * mix * gain);
+    }
+
+}
+
+void FilterData::reset(int filterChoice)
+{
+    if(filterChoice == 0)
+        phaserFilter.reset();
+    else if(filterChoice == 1)
+        ladderFilter.reset();
+    
 }
