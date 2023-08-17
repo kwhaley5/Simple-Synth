@@ -4,16 +4,25 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturer="KiTiK Music">
   <MAINGROUP id="nsg0uI" name="SimpleSynth">
+    <GROUP id="{D0DDF8CE-E146-BD1F-73FE-ED7869BBD4A6}" name="Assets">
+      <FILE id="sOB8Ji" name="OFFSHORE.TTF" compile="0" resource="1" file="../../../APPDATA/LOCAL/MICROSOFT/WINDOWS/FONTS/OFFSHORE.TTF"/>
+      <FILE id="NWvjBw" name="KITIK_LOGO_NO_BKGD.png" compile="0" resource="1"
+            file="../../Muisc/Pictures/KITIK_LOGO_NO_BKGD.png"/>
+    </GROUP>
     <GROUP id="{FFEEB3B7-0063-789B-25B0-8845512DC57E}" name="Source">
       <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
+        <FILE id="f0HDmB" name="globalGain.cpp" compile="1" resource="0" file="Source/DSP/globalGain.cpp"/>
+        <FILE id="DYEM1x" name="globalGain.h" compile="0" resource="0" file="Source/DSP/globalGain.h"/>
         <FILE id="kIIoNV" name="filterData.cpp" compile="1" resource="0" file="Source/DSP/filterData.cpp"/>
         <FILE id="qzL5l5" name="filterData.h" compile="0" resource="0" file="Source/DSP/filterData.h"/>
         <FILE id="kK3IrG" name="oscData.h" compile="0" resource="0" file="Source/DSP/oscData.h"/>
         <FILE id="lqwljV" name="oscData.cpp" compile="1" resource="0" file="Source/DSP/oscData.cpp"/>
       </GROUP>
       <GROUP id="{4A5F8667-0A5B-0839-A7E4-0E133E4E50C9}" name="GUI">
-        <FILE id="saU0XV" name="keyboard.cpp" compile="1" resource="0" file="Source/GUI/keyboard.cpp"/>
-        <FILE id="uLo0iT" name="keyboard.h" compile="0" resource="0" file="Source/GUI/keyboard.h"/>
+        <FILE id="xQErs1" name="GlobalControls.cpp" compile="1" resource="0"
+              file="Source/GUI/GlobalControls.cpp"/>
+        <FILE id="z94ELC" name="GlobalControls.h" compile="0" resource="0"
+              file="Source/GUI/GlobalControls.h"/>
         <FILE id="S7qXiO" name="filter.cpp" compile="1" resource="0" file="Source/GUI/filter.cpp"/>
         <FILE id="nD7GJn" name="filter.h" compile="0" resource="0" file="Source/GUI/filter.h"/>
         <FILE id="FrKxlV" name="KiTiKLNF.h" compile="0" resource="0" file="Source/GUI/KiTiKLNF.h"/>

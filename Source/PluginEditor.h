@@ -13,12 +13,12 @@
 #include "GUI/KiTiKLNF.h"
 #include "GUI/osc.h"
 #include "GUI/filter.h"
-#include "GUI/keyboard.h"
+#include "GUI/GlobalControls.h"
 
 //==============================================================================
 /**
 */
-class SimpleSynthAudioProcessorEditor  : public juce::AudioProcessorEditor
+class SimpleSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, juce::Timer
 {
 public:
     SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor&);
@@ -27,6 +27,7 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void timerCallback() override;
     void setKeyboard();
 
 private:
@@ -36,6 +37,7 @@ private:
 
     OscComp oscComp{audioProcessor.apvts};
     FilterComp filterComp{ audioProcessor.apvts };
+    GlobalControls globalControls{ audioProcessor.apvts };
 
     
     juce::MidiKeyboardComponent keyboard{ audioProcessor.keyState, juce::KeyboardComponentBase::horizontalKeyboard };

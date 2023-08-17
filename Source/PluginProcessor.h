@@ -12,6 +12,7 @@
 #include "SynthSound.h"
 #include "SynthVoice.h"
 #include "DSP/filterData.h"
+#include "DSP/globalGain.h"
 
 //==============================================================================
 /**
@@ -60,6 +61,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    float getOutRMS(int channel);
+
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
@@ -67,14 +70,15 @@ public:
 
 private:
 
+    GlobalGain globalGain;
     juce::Synthesiser synth1;
     juce::Synthesiser synth2;
     FilterData filters;
 
-    juce::AudioParameterBool* gBypass{ nullptr };
     juce::AudioParameterFloat* gGain{ nullptr };
     juce::AudioParameterBool* bypassSynth1{ nullptr };
     juce::AudioParameterBool* bypassSynth2{ nullptr };
+    juce::AudioParameterBool* bypassFilter{ nullptr };
 
     //juce::AudioParameterInt* voices{ nullptr };
 
@@ -125,14 +129,15 @@ private:
     juce::AudioParameterFloat* combGain{ nullptr };
     juce::AudioParameterFloat* combMix{ nullptr };
 
+    std::array<std::atomic<float>, 2> rmsOut{ -60, -60 };
+
     //RoadMap:
         //Bypass Buttons:
-            //Osc 1
-            //Osc 2
+            //Osc 1 DONE
+            //Osc 2 DONE
             //Filter(s)
-        //Global Gain
-        //Global Toggle Switch
-        //output meters
+        //Global Gain DONE
+        //output meters DONE
         //LFO's
             //mapping
             
@@ -147,7 +152,6 @@ private:
         //Outlines/Seperators
         //Buttons clipping
         //Sliders Clipping
-        //FM Switch shuts off 2.
         //Filters don't stay active when not displayed. 
 
     //==============================================================================

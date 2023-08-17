@@ -15,11 +15,12 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
 {
     addAndMakeVisible(oscComp);
     addAndMakeVisible(filterComp);
-
+    addAndMakeVisible(globalControls);
 
     setKeyboard();
 
     setSize (1000, 800);
+    startTimerHz(24);
 }
 
 SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
@@ -52,7 +53,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
 
     auto keyboard = bounds;
     g.drawRect(keyboard);
-    g.drawFittedText("Keyboard", keyboard, juce::Justification::centred, 1);
+    //g.drawFittedText("Keyboard", keyboard, juce::Justification::centred, 1);
 
     setColour(0x1005004, juce::Colour(64u, 194u, 230u));
 
@@ -64,6 +65,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto bounds = getLocalBounds();
     
     auto globalControlsBounds = bounds.removeFromTop(bounds.getHeight() * .05);
+    globalControls.setBounds(globalControlsBounds);
 
     auto filterBounds = bounds.removeFromTop(bounds.getHeight() * .47);
     auto oscsBounds = filterBounds.removeFromLeft(filterBounds.getWidth() * .66);
@@ -76,6 +78,17 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto keyboardBounds = bounds;
     keyboard.setBounds(keyboardBounds);
 
+}
+
+void SimpleSynthAudioProcessorEditor::timerCallback()
+{
+    std::vector<float> values
+    {
+        audioProcessor.getOutRMS(0),
+        audioProcessor.getOutRMS(1)
+    };
+
+    globalControls.update(values);
 }
 
 void SimpleSynthAudioProcessorEditor::setKeyboard()

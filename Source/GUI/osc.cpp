@@ -20,7 +20,6 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     sawAT1(apvts, "saw1", saw1), sawAT2(apvts, "saw2", saw2),
     squareAT1(apvts, "square1", square1), squareAT2(apvts, "square2", square2),
     triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
-    bypassAT1(apvts, "bypassSynth1", bypass1), bypassAT2(apvts, "bypassSynth2", bypass2),
     fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth)
 {
     setLookAndFeel(&lnf);
@@ -35,8 +34,6 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     addAndMakeVisible(saw1);
     addAndMakeVisible(square1);
     addAndMakeVisible(triangle1);
-
-    addAndMakeVisible(bypass1);
 
     sine1.onClick = [this] {updateToggleState(&sine1); };
     saw1.onClick = [this] {updateToggleState(&saw1); };
@@ -58,8 +55,6 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     addAndMakeVisible(saw2);
     addAndMakeVisible(square2);
     addAndMakeVisible(triangle2);
-
-    addAndMakeVisible(bypass2);
 
     sine2.onClick = [this] {updateToggleState(&sine2); };
     saw2.onClick = [this] {updateToggleState(&saw2); };
@@ -126,8 +121,6 @@ void OscComp::resized()
     auto gainBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .2);
     gain1.setBounds(gainBounds1);
 
-    bypass1.setBounds(boundsLeft);
-
     auto sineBounds1 = waveTypeBounds1.removeFromLeft(waveTypeBounds1.getWidth() * .25);
     sine1.setBounds(sineBounds1);
     auto sawBounds1 = waveTypeBounds1.removeFromLeft(waveTypeBounds1.getWidth() * .33);
@@ -150,8 +143,6 @@ void OscComp::resized()
     auto waveTypeBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .166);
     auto gainBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .2);
     gain2.setBounds(gainBounds2);
-
-    bypass2.setBounds(boundsRight);
 
     auto fmBounds = boundsRight.removeFromLeft(boundsRight.getWidth() * .2);
     auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);

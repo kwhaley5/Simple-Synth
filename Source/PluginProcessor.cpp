@@ -34,10 +34,10 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     synth2.addVoice(new SynthVoice());
     synth2.addVoice(new SynthVoice());
 
-    gBypass = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("gBypass"));
     gGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("gGain"));
     bypassSynth1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth1"));
     bypassSynth2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth2"));
+    bypassFilter = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassFilter"));
 
     //voices = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("voices"));
 
@@ -170,7 +170,7 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
             voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
         }
     }
-
+    globalGain.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
     filters.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
@@ -236,6 +236,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     //    synth2.addVoice(new SynthVoice());
     //}
 
+    globalGain.setGain(gGain->get());
+
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
@@ -266,12 +268,20 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
     filters.updatePhaserParams(phaserRate->get(), phaserDepth->get(), phaserCenterFreq->get(), phaserFeedback->get(), phaserMix->get());
 
-    filters.process(buffer);
+    if(!bypassFilter->get())
+        filters.process(buffer);
     
     for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
         filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
 
-    //Now I just need to figure out how to do bypass again 
+    globalGain.processCtx(buffer);
+
+    for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
+    {
+        rmsOut[channel] = juce::Decibels::gainToDecibels(buffer.getRMSLevel(channel, 0, buffer.getNumSamples()));
+        if (rmsOut[channel] < -60) { rmsOut[channel] = -60; }
+    }
+
 }
 
 //==============================================================================
@@ -302,6 +312,12 @@ void SimpleSynthAudioProcessor::setStateInformation (const void* data, int sizeI
     }
 }
 
+float SimpleSynthAudioProcessor::getOutRMS(int channel)
+{
+    jassert(channel == 0 || channel == 1);
+    return rmsOut[channel];
+}
+
 juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createParameterLayout()
 {
     using namespace juce;
@@ -310,6 +326,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto range = NormalisableRange<float>(0, 5, .001, .7);
     auto zeroToOne = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
+    auto outGainRange = NormalisableRange<float>(-24, 24, .1, 1);
     auto fmRange = NormalisableRange<float>(0, 1000, 1, 1);
     auto freqRange = NormalisableRange<float>(20, 20000, 1, 1);
     auto driveRange = NormalisableRange<float>(1, 10, .1, 1);
@@ -321,10 +338,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto filterTypes = juce::StringArray{ "ladder", "phaser", "comb"};
     auto ladderFilterTypes = juce::StringArray{ "LP12", "HP12", "BP12", "LP24", "HP24", "BP24" };
 
-    layout.add(std::make_unique<AudioParameterBool>("gBypass", "Global Bypass", false));
-    layout.add(std::make_unique<AudioParameterFloat>("gGain", "Global Gain", gainRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("gGain", "Global Gain", outGainRange, 0));
     layout.add(std::make_unique<AudioParameterBool>("bypassSynth1", "Synth 1 Bypass", false));
     layout.add(std::make_unique<AudioParameterBool>("bypassSynth2", "Synth 2 Bypass", false));
+    layout.add(std::make_unique<AudioParameterBool>("bypassFilter", "Filter Bypass", false));
 
     //layout.add(std::make_unique<AudioParameterInt>("voices", "Synth Voices", 1, 8, 1));
 
