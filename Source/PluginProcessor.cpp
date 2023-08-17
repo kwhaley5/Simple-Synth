@@ -34,6 +34,11 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     synth2.addVoice(new SynthVoice());
     synth2.addVoice(new SynthVoice());
 
+    gBypass = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("gBypass"));
+    gGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("gGain"));
+    bypassSynth1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth1"));
+    bypassSynth2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth2"));
+
     //voices = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("voices"));
 
     attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack1"));
@@ -212,6 +217,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    //Select Wave Type
     wavetype1[0] = sine1->get();
     wavetype1[1] = saw1->get();
     wavetype1[2] = square1->get();
@@ -252,8 +258,10 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         }
     }
 
-    synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-    synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    if(!bypassSynth1->get())
+        synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    if(!bypassSynth2->get())
+        synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
     filters.updatePhaserParams(phaserRate->get(), phaserDepth->get(), phaserCenterFreq->get(), phaserFeedback->get(), phaserMix->get());
@@ -262,10 +270,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
         filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
-
-    juce::MidiMessage message;
-
-    //filters.reset(filterType->getIndex());
 
     //Now I just need to figure out how to do bypass again 
 }
@@ -317,10 +321,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     auto filterTypes = juce::StringArray{ "ladder", "phaser", "comb"};
     auto ladderFilterTypes = juce::StringArray{ "LP12", "HP12", "BP12", "LP24", "HP24", "BP24" };
 
-    //Global Toggle Switch
-    //Global Gain Ouput
-    //bypass synth1
-    //bypass synth 2
+    layout.add(std::make_unique<AudioParameterBool>("gBypass", "Global Bypass", false));
+    layout.add(std::make_unique<AudioParameterFloat>("gGain", "Global Gain", gainRange, 0));
+    layout.add(std::make_unique<AudioParameterBool>("bypassSynth1", "Synth 1 Bypass", false));
+    layout.add(std::make_unique<AudioParameterBool>("bypassSynth2", "Synth 2 Bypass", false));
 
     //layout.add(std::make_unique<AudioParameterInt>("voices", "Synth Voices", 1, 8, 1));
 
@@ -377,13 +381,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
         //Amplitude
         //Set Same types as osc
         //Figure out how to link stuff... Try looking at Surge.
-
-    //juce MidiKeyboardComponent
-        //juce keyboard
-        //pitch wheel -> no juce object, look that up too
-        //mod wheel
-
-
 
     return layout;
 }

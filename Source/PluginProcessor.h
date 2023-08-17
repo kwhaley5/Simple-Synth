@@ -71,6 +71,11 @@ private:
     juce::Synthesiser synth2;
     FilterData filters;
 
+    juce::AudioParameterBool* gBypass{ nullptr };
+    juce::AudioParameterFloat* gGain{ nullptr };
+    juce::AudioParameterBool* bypassSynth1{ nullptr };
+    juce::AudioParameterBool* bypassSynth2{ nullptr };
+
     //juce::AudioParameterInt* voices{ nullptr };
 
     juce::AudioParameterFloat* attack1{nullptr};
@@ -119,6 +124,31 @@ private:
     juce::AudioParameterFloat* combFeedback{ nullptr };
     juce::AudioParameterFloat* combGain{ nullptr };
     juce::AudioParameterFloat* combMix{ nullptr };
+
+    //RoadMap:
+        //Bypass Buttons:
+            //Osc 1
+            //Osc 2
+            //Filter(s)
+        //Global Gain
+        //Global Toggle Switch
+        //output meters
+        //LFO's
+            //mapping
+            
+    //Nice Haves (2.0?):
+        //Dynamic Voice Adjustment
+        //Pitch/Mod Wheel visuals
+        //Graphs
+
+    //Bugs/Design
+        //Clicking when note finished playing
+        //Design Vertical and Horizontal Sliders
+        //Outlines/Seperators
+        //Buttons clipping
+        //Sliders Clipping
+        //FM Switch shuts off 2.
+        //Filters don't stay active when not displayed. 
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)

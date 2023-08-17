@@ -32,7 +32,8 @@ private:
     juce::ToggleButton sine1     {"Sine"},
                        square1   { "Square" },
                        saw1      { "Saw" },
-                       triangle1 { "Triangle" };
+                       triangle1 { "Triangle" },
+                       bypass1   { "Bypass" };
     juce::Slider       attack1   { "Attack" },
                        decay1    { "Decay" },
                        sustain1  { "Sustain" },
@@ -41,12 +42,13 @@ private:
 
     juce::AudioProcessorValueTreeState::SliderAttachment attackAT1, decayAT1, sustainAT1, releaseAT1;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT1;
-    juce::AudioProcessorValueTreeState::ButtonAttachment sineAT1, squareAT1, sawAT1, triangleAT1;
+    juce::AudioProcessorValueTreeState::ButtonAttachment sineAT1, squareAT1, sawAT1, triangleAT1, bypassAT1;
 
-    juce::ToggleButton sine2     {"Sine"},
+    juce::ToggleButton sine2     { "Sine" },
                        square2   { "Square" },
                        saw2      { "Saw" },
-                       triangle2 { "Triangle" };
+                       triangle2 { "Triangle" },
+                       bypass2   { "Bypass" };
     juce::Slider       attack2   { "Attack" },
                        decay2    { "Decay" },
                        sustain2  { "Sustain" },
@@ -55,7 +57,7 @@ private:
 
     juce::AudioProcessorValueTreeState::SliderAttachment attackAT2, decayAT2, sustainAT2, releaseAT2;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT2;
-    juce::AudioProcessorValueTreeState::ButtonAttachment sineAT2, squareAT2, sawAT2, triangleAT2;
+    juce::AudioProcessorValueTreeState::ButtonAttachment sineAT2, squareAT2, sawAT2, triangleAT2, bypassAT2;
 
     juce::ToggleButton fmOsc;
     juce::Slider fmDepth{ "Depth" };

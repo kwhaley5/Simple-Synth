@@ -16,7 +16,6 @@ void oscData::prepareToPlay(juce::dsp::ProcessSpec& spec)
     prepare(spec);
     fmOsc.prepare(spec);
     oscGain.prepare(spec);
-    oscGain.setGainLinear(.1f);
 }
 
 void oscData::setWaveType(std::array<bool, 4>& array)

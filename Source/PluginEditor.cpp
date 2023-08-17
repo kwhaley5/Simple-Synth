@@ -16,9 +16,8 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(oscComp);
     addAndMakeVisible(filterComp);
 
-    keyboard.setKeyWidth(20);
-    addAndMakeVisible(keyboard);
 
+    setKeyboard();
 
     setSize (1000, 800);
 }
@@ -55,6 +54,8 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawRect(keyboard);
     g.drawFittedText("Keyboard", keyboard, juce::Justification::centred, 1);
 
+    setColour(0x1005004, juce::Colour(64u, 194u, 230u));
+
 }
 
 void SimpleSynthAudioProcessorEditor::resized()
@@ -71,6 +72,7 @@ void SimpleSynthAudioProcessorEditor::resized()
 
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
 
+    setColour(0x1005004, juce::Colour(64u, 194u, 230u));
     auto keyboardBounds = bounds;
     keyboard.setBounds(keyboardBounds);
 
@@ -78,11 +80,11 @@ void SimpleSynthAudioProcessorEditor::resized()
 
 void SimpleSynthAudioProcessorEditor::setKeyboard()
 {
+    setLookAndFeel(&lnf);
+
     keyboard.setKeyWidth(25);
     addAndMakeVisible(keyboard);
 
-    auto bounds = getLocalBounds();
-
-    auto keyboardBounds = bounds.removeFromBottom(bounds.getHeight() * .2);
-    keyboard.setBounds(keyboardBounds);
+    lnf.setColour(0x1005003, juce::Colour(64u, 194u, 230u));
+    lnf.setColour(0x1005004, juce::Colour(64u, 194u, 230u));
 }

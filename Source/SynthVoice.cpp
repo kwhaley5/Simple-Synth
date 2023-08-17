@@ -17,7 +17,7 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
 {
-    osc.setWaveFreq(midiNoteNumber, 0, false, 0); //dummy vairables since if it is called here it shouldn't fm? maybe
+    osc.setWaveFreq(midiNoteNumber, 0, false, 0); //Need to change back
     adsr.noteOn();
 }
 
@@ -44,6 +44,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int s
     if (!isVoiceActive())
         return;
 
+    //Gets rid of clipping when switching between notes
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     synthBuffer.clear();
 

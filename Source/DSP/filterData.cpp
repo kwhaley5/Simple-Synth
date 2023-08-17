@@ -81,6 +81,7 @@ void FilterData::updatePhaserParams(float rate, float depth, float centerFreq, f
 
 void FilterData::processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate)
 {
+    //comb filtering is selayed signal. My implmentation with delayline
     smoothedDelay[channel].setTargetValue(freq/1000);
 
     auto block = juce::dsp::AudioBlock<float>(buffer);
