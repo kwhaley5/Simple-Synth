@@ -23,12 +23,15 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth)
 {
     setLookAndFeel(&lnf);
-
     setSlider(attack1);
     setSlider(decay1);
     setSlider(sustain1);
     setSlider(release1);
     setHorzSlider(gain1);
+
+    setSlider(attackMod1);
+    attackMod1.setColour(0x1001300, juce::Colours::red);
+    attackMod1.setVisible(false);
 
     addAndMakeVisible(sine1);
     addAndMakeVisible(saw1);
@@ -83,9 +86,9 @@ void OscComp::paint(juce::Graphics& g)
     auto bounds = getLocalBounds().reduced(5);
     auto boundsLeft = bounds.removeFromLeft(bounds.getWidth() * .5);
     auto boundsRight = bounds;
-    g.drawRect(boundsRight);
+    //g.drawRect(boundsRight);
 
-    auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .4).reduced(5);
+    auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .5).reduced(5);
     auto adsrBounds = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto waveTypeBounds = bounds.removeFromBottom(bounds.getHeight() * .166);
     auto gainBounds = bounds.removeFromBottom(bounds.getHeight() * .2);
@@ -98,7 +101,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.setColour(juce::Colours::black);
 
-    auto oscPictureR = boundsRight.removeFromTop(boundsRight.getHeight() * .4).reduced(5);
+    auto oscPictureR = boundsRight.removeFromTop(boundsRight.getHeight() * .5).reduced(5);
     oscPictureR = oscPictureR.removeFromRight(oscPictureR.getWidth() * .8);
     auto adsrBounds2 = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto waveTypeBounds2 = bounds.removeFromBottom(bounds.getHeight() * .166);
@@ -116,9 +119,9 @@ void OscComp::resized()
     auto boundsLeft = bounds.removeFromLeft(bounds.getWidth() * .5).reduced(5);
     auto boundsRight = bounds.reduced(5);
 
-    auto adsrBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .4);
+    auto adsrBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .3);
     auto waveTypeBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .166);
-    auto gainBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .2);
+    auto gainBounds1 = boundsLeft.removeFromBottom(boundsLeft.getHeight() * .18);
     gain1.setBounds(gainBounds1);
 
     auto sineBounds1 = waveTypeBounds1.removeFromLeft(waveTypeBounds1.getWidth() * .25);
@@ -132,6 +135,7 @@ void OscComp::resized()
 
     auto attackBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .25);
     attack1.setBounds(attackBounds1);
+    attackMod1.setBounds(attackBounds1);
     auto decayBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .33);
     decay1.setBounds(decayBounds1);
     auto sustainBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .5);
@@ -139,9 +143,9 @@ void OscComp::resized()
     auto releaseBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth());
     release1.setBounds(releaseBounds1);
 
-    auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .4);
+    auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .3);
     auto waveTypeBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .166);
-    auto gainBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .2);
+    auto gainBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .18);
     gain2.setBounds(gainBounds2);
 
     auto fmBounds = boundsRight.removeFromLeft(boundsRight.getWidth() * .2);
@@ -193,4 +197,9 @@ void OscComp::setRotarySlider(juce::Slider& slider)
 void OscComp::updateToggleState(juce::Button* button)
 {
     auto state = button->getToggleState();
+}
+
+void OscComp::makeModVisible()
+{
+    attackMod1.setVisible(true);
 }

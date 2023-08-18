@@ -149,6 +149,8 @@ void FilterComp::resized()
     auto dialAreaPhaser = dialArea;
     auto dialAreaComb = dialArea;
     auto comboArea = bounds.removeFromBottom(bounds.getHeight() * .167);
+    comboArea = comboArea.removeFromLeft(comboArea.getWidth() - 10);
+    comboArea = comboArea.removeFromRight(comboArea.getWidth() - 10);
 
     juce::FlexBox flexbox;
     flexbox.flexDirection = juce::FlexBox::Direction::row;

@@ -25,6 +25,8 @@ struct OscComp : public juce::Component
     void setRotarySlider(juce::Slider&);
     void updateToggleState(juce::Button*);
 
+    void makeModVisible();
+
 private:
 
     Laf lnf;
@@ -61,6 +63,8 @@ private:
     juce::Slider fmDepth{ "Depth" };
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
     juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
+
+    juce::Slider attackMod1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
 };

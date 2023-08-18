@@ -139,12 +139,13 @@ private:
         //Global Gain DONE
         //output meters DONE
         //LFO's
-            //mapping
+            //Attach all the parms
+            //Create everything... twice
+        //Try to Copy Juce Graphs
             
     //Nice Haves (2.0?):
         //Dynamic Voice Adjustment
         //Pitch/Mod Wheel visuals
-        //Graphs
 
     //Bugs/Design
         //Clicking when note finished playing

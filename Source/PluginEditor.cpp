@@ -35,7 +35,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     auto bounds = getLocalBounds();
-    g.setColour(juce::Colours::white);
+    g.setColour(juce::Colours::red);
     g.setFont(15.0f);
 
     auto globalControls = bounds.removeFromTop(bounds.getHeight() * .05);
@@ -54,7 +54,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     //g.drawFittedText("LFO's", lfos, juce::Justification::centred, 1);
 
     auto keyboard = bounds;
-    g.drawRect(keyboard);
+    g.drawRect(keyboard.getX(), keyboard.getY(), keyboard.getWidth(), keyboard.getHeight() + 2);
     //g.drawFittedText("Keyboard", keyboard, juce::Justification::centred, 1);
 
     setColour(0x1005004, juce::Colour(64u, 194u, 230u));
