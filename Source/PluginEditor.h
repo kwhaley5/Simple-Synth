@@ -10,10 +10,10 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "GUI/KiTiKLNF.h"
 #include "GUI/osc.h"
 #include "GUI/filter.h"
 #include "GUI/GlobalControls.h"
+#include "GUI/lfo.h"
 
 //==============================================================================
 /**
@@ -33,11 +33,11 @@ public:
 private:
     SimpleSynthAudioProcessor& audioProcessor;
 
-    Laf lnf;
-
     OscComp oscComp{audioProcessor.apvts};
     FilterComp filterComp{ audioProcessor.apvts };
     GlobalControls globalControls{ audioProcessor.apvts };
+    LFOComp lfoComp1{ audioProcessor.apvts };
+    LFOComp lfoComp2{ audioProcessor.apvts };
 
     
     juce::MidiKeyboardComponent keyboard{ audioProcessor.keyState, juce::KeyboardComponentBase::horizontalKeyboard };

@@ -132,10 +132,10 @@ private:
     std::array<std::atomic<float>, 2> rmsOut{ -60, -60 };
 
     //RoadMap:
-        //Bypass Buttons:
+        //Bypass Buttons: DONE
             //Osc 1 DONE
             //Osc 2 DONE
-            //Filter(s)
+            //Filter(s) DONE
         //Global Gain DONE
         //output meters DONE
         //LFO's
