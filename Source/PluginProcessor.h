@@ -75,6 +75,7 @@ private:
     juce::Synthesiser synth2;
     FilterData filters;
 
+    //Globas Var
     juce::AudioParameterFloat* gGain{ nullptr };
     juce::AudioParameterBool* bypassSynth1{ nullptr };
     juce::AudioParameterBool* bypassSynth2{ nullptr };
@@ -82,54 +83,87 @@ private:
 
     //juce::AudioParameterInt* voices{ nullptr };
 
+    //Osc1 Controls
     juce::AudioParameterFloat* attack1{nullptr};
     juce::AudioParameterFloat* decay1{nullptr};
     juce::AudioParameterFloat* sustain1{nullptr};
     juce::AudioParameterFloat* release1{nullptr};
     juce::AudioParameterFloat* oscGain1{nullptr};
 
+    //Osc1 Wave Type
     juce::AudioParameterBool* sine1{nullptr};
     juce::AudioParameterBool* saw1{nullptr};
     juce::AudioParameterBool* square1{nullptr};
     juce::AudioParameterBool* triangle1{nullptr};
-
     std::array<bool, 4> wavetype1;
 
+    //Osc 2 Controls
     juce::AudioParameterFloat* attack2{nullptr};
     juce::AudioParameterFloat* decay2{nullptr};
     juce::AudioParameterFloat* sustain2{nullptr};
     juce::AudioParameterFloat* release2{nullptr};
     juce::AudioParameterFloat* oscGain2{nullptr};
 
+    //Osc 2 Wave Type
     juce::AudioParameterBool* sine2{nullptr};
     juce::AudioParameterBool* saw2{nullptr};
     juce::AudioParameterBool* square2{nullptr};
     juce::AudioParameterBool* triangle2{nullptr};
-
     std::array<bool, 4> wavetype2;
 
+    //Fm Params
     juce::AudioParameterBool* fmOsc{nullptr};
     juce::AudioParameterFloat* fmDepth{nullptr};
 
+    //Filter Select
     juce::AudioParameterChoice* filterType{ nullptr };
 
+    //Ladder Params
     juce::AudioParameterChoice* ladderChoice{nullptr};
     juce::AudioParameterFloat* ladderFreq{nullptr};
     juce::AudioParameterFloat* ladderRes{nullptr};
     juce::AudioParameterFloat* ladderDrive{nullptr};
 
+    //Phaser Params
     juce::AudioParameterFloat* phaserRate{ nullptr };
     juce::AudioParameterFloat* phaserDepth{ nullptr };
     juce::AudioParameterFloat* phaserCenterFreq{ nullptr };
     juce::AudioParameterFloat* phaserFeedback{ nullptr };
     juce::AudioParameterFloat* phaserMix{ nullptr };
 
+    //Comb Params
     juce::AudioParameterFloat* combFreq{ nullptr };
     juce::AudioParameterFloat* combFeedback{ nullptr };
     juce::AudioParameterFloat* combGain{ nullptr };
     juce::AudioParameterFloat* combMix{ nullptr };
 
+    //RMS Out
     std::array<std::atomic<float>, 2> rmsOut{ -60, -60 };
+
+    //LFO1 Wave Types
+    juce::AudioParameterBool* lfo1sine{ nullptr };
+    juce::AudioParameterBool* lfo1saw{ nullptr };
+    juce::AudioParameterBool* lfo1square{ nullptr };
+    juce::AudioParameterBool* lfo1triangle{ nullptr };
+
+    //LFO1 Modulators
+    juce::AudioParameterFloat* lfo1attack1{ nullptr };
+    juce::AudioParameterFloat* lfo1decay1{ nullptr };
+    juce::AudioParameterFloat* lfo1sustain1{ nullptr };
+    juce::AudioParameterFloat* lfo1release1{ nullptr };
+    juce::AudioParameterFloat* lfo1oscGain1{ nullptr };
+    juce::AudioParameterFloat* lfo1attack2{ nullptr };
+    juce::AudioParameterFloat* lfo1decay2{ nullptr };
+    juce::AudioParameterFloat* lfo1sustain2{ nullptr };
+    juce::AudioParameterFloat* lfo1release2{ nullptr };
+    juce::AudioParameterFloat* lfo1oscGain2{ nullptr };
+    juce::AudioParameterFloat* lfo1phaserRate{ nullptr };
+    juce::AudioParameterFloat* lfo1phaserDepth{ nullptr };
+    juce::AudioParameterFloat* lfo1phaserCenterFreq{ nullptr };
+    juce::AudioParameterFloat* lfo1phaserFeedback{ nullptr };
+    juce::AudioParameterFloat* lfo1phaserMix{ nullptr };
+
+    juce::AudioParameterFloat* lfo1Rate{ nullptr };
 
     //RoadMap:
         //Bypass Buttons: DONE

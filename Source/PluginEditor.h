@@ -36,8 +36,7 @@ private:
     OscComp oscComp{audioProcessor.apvts};
     FilterComp filterComp{ audioProcessor.apvts };
     GlobalControls globalControls{ audioProcessor.apvts };
-    LFOComp lfoComp1{ audioProcessor.apvts };
-    LFOComp lfoComp2{ audioProcessor.apvts };
+    LFOComp lfoComp{ audioProcessor.apvts };
 
     
     juce::MidiKeyboardComponent keyboard{ audioProcessor.keyState, juce::KeyboardComponentBase::horizontalKeyboard };

@@ -16,8 +16,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(oscComp);
     addAndMakeVisible(filterComp);
     addAndMakeVisible(globalControls);
-    addAndMakeVisible(lfoComp1);
-    addAndMakeVisible(lfoComp2);
+    addAndMakeVisible(lfoComp);
 
     setKeyboard();
 
@@ -75,10 +74,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     filterComp.setBounds(filterBounds);
 
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
-    auto lfo1Area = lfosBounds.removeFromLeft(lfosBounds.getWidth() * .5);
-    auto lfo2Area = lfosBounds.removeFromLeft(lfosBounds.getWidth());
-    lfoComp1.setBounds(lfo1Area);
-    lfoComp2.setBounds(lfo2Area);
+    lfoComp.setBounds(lfosBounds);
 
     setColour(0x1005004, juce::Colour(64u, 194u, 230u));
     auto keyboardBounds = bounds;

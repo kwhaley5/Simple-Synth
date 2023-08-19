@@ -34,6 +34,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     synth2.addVoice(new SynthVoice());
     synth2.addVoice(new SynthVoice());
 
+    //Global Controls
     gGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("gGain"));
     bypassSynth1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth1"));
     bypassSynth2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("bypassSynth2"));
@@ -41,6 +42,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
     //voices = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("voices"));
 
+    //Osc 1
     attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack1"));
     decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay1"));
     sustain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("sustain1"));
@@ -51,6 +53,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     square1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square1"));
     triangle1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle1"));
 
+    //Osc 2
     attack2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack2"));
     decay2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("decay2"));
     sustain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("sustain2"));
@@ -61,26 +64,54 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     square2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square2"));
     triangle2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle2"));
 
+    //fm params
     fmOsc = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("fmOsc"));
     fmDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("fmDepth"));
 
     filterType = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("filterType"));
 
+    //Ladder Params
     ladderChoice = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("ladderChoice"));
     ladderFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderFreq"));
     ladderRes = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderRes"));
     ladderDrive = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("ladderDrive"));
 
+    //Phaser Params
     phaserRate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserRate"));
     phaserDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserDepth"));
     phaserCenterFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserCenterFreq"));
     phaserFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserFeedback"));
     phaserMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("phaserMix"));
 
+    //Comb Params
     combFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combFreq"));
     combFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combFeedback"));
     combGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combGain"));
     combMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("combMix"));
+
+    //LFO1 Wave Type
+    lfo1sine = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("lfo1sine"));
+    lfo1saw = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("lfo1saw"));
+    lfo1square = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("lfo1square"));
+    lfo1triangle = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("lfo1triangle"));
+
+    //LFO 1 Params
+    lfo1attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1attack1"));
+    lfo1decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1decay1"));
+    lfo1sustain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1sustain1"));
+    lfo1release1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1release1"));
+    lfo1oscGain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1oscGain1"));
+    lfo1attack2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1attack2"));
+    lfo1decay2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1decay2"));
+    lfo1sustain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1sustain2"));
+    lfo1release2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1release2"));
+    lfo1oscGain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1oscGain2"));
+    lfo1phaserRate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1phaserRate"));
+    lfo1phaserDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1phaserDepth"));
+    lfo1phaserCenterFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1phaserCenterFreq"));
+    lfo1phaserFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1phaserFeedback"));
+    lfo1phaserMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1phaserMix"));
+    lfo1Rate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1Rate"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -381,11 +412,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("ladderFreq", "Ladder Frequency", freqRange, 100));
     layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("ladderDrive", "Ladder Drive", driveRange, 1));
+
     //comb
     layout.add(std::make_unique<AudioParameterFloat>("combFreq", "Comb Filter Frequency", combRange, 20));
     layout.add(std::make_unique<AudioParameterFloat>("combFeedback", "Comb Filter Feedback", combFreqRange, .3));
     layout.add(std::make_unique<AudioParameterFloat>("combGain", "Comb Filter Gain", range, 1));
     layout.add(std::make_unique<AudioParameterFloat>("combMix", "Comb Filter Mix", zeroToOne, 0));
+
     //Phaser
     layout.add(std::make_unique<AudioParameterFloat>("phaserRate", "Phaser Rate", lfoRange, 0.1));
     layout.add(std::make_unique<AudioParameterFloat>("phaserDepth", "Phaser Depth", zeroToOne, 0));
@@ -393,11 +426,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("phaserFeedback", "Phaser Feedback", feedbackRange, 0));
     layout.add(std::make_unique<AudioParameterFloat>("phaserMix", "Phaser Mix", zeroToOne, 0));
 
-    //LFO's
-        //Rate
-        //Amplitude
-        //Set Same types as osc
-        //Figure out how to link stuff... Try looking at Surge.
+    //LFO1 wavetype
+    layout.add(std::make_unique<AudioParameterBool>("lfo1sine", "LFO 1 Sine Wave", true));
+    layout.add(std::make_unique<AudioParameterBool>("lfo1saw", "LFO 1 Saw Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("lfo1square", "LFO 1 Square Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("lfo1triangle", "LFO 1 Triangle Wave", false));
+
+    //LFO1
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1attack1", "LFO1 Osc 1 Attack", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1decay1", "LFO1 Osc 1 Decay", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1sustain1", "LFO1 Osc 1 Sustain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1release1", "LFO1 Osc 1 Release", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1gain1", "LFO1 Osc 1 Gain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1attack2", "LFO1 Osc 2 Attack", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1decay2", "LFO1 Osc 2 Decay", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1sustain2", "LFO1 Osc 2 Sustain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1release2", "LFO1 Osc 2 Release", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1gain2", "LFO1 Osc 2 Gain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserRate", "LFO1 Phaser Rate", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserDepth", "LFO1 Phaser Depth", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserCenterFreq", "LFO1 Phaser Center Frequency", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserFeedback", "LFO1 Phaser Feedback", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserMix", "LFO1 Phaser Mix", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1Rate", "LFO1 Rate", lfoRange, 0));
 
     return layout;
 }
