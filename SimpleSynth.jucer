@@ -11,6 +11,8 @@
     </GROUP>
     <GROUP id="{FFEEB3B7-0063-789B-25B0-8845512DC57E}" name="Source">
       <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
+        <FILE id="dEVR0g" name="lfoData.cpp" compile="1" resource="0" file="Source/DSP/lfoData.cpp"/>
+        <FILE id="SWRl00" name="lfoData.h" compile="0" resource="0" file="Source/DSP/lfoData.h"/>
         <FILE id="f0HDmB" name="globalGain.cpp" compile="1" resource="0" file="Source/DSP/globalGain.cpp"/>
         <FILE id="DYEM1x" name="globalGain.h" compile="0" resource="0" file="Source/DSP/globalGain.h"/>
         <FILE id="kIIoNV" name="filterData.cpp" compile="1" resource="0" file="Source/DSP/filterData.cpp"/>

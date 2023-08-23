@@ -203,6 +203,7 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     }
     globalGain.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
     filters.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+    lfo1.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -248,16 +249,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    //Select Wave Type
-    wavetype1[0] = sine1->get();
-    wavetype1[1] = saw1->get();
-    wavetype1[2] = square1->get();
-    wavetype1[3] = triangle1->get();
-
-    wavetype2[0] = sine2->get();
-    wavetype2[1] = saw2->get();
-    wavetype2[2] = square2->get();
-    wavetype2[3] = triangle2->get();
+    fillArrays();
 
     //for (int i = 1; i < voices->get(); ++i)
     //{
@@ -268,6 +260,10 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     //}
 
     globalGain.setGain(gGain->get());
+
+    lfo1.setRate(lfo1Rate->get());
+    lfo1Output = lfo1.processNextBlock(buffer);
+    lfo1.modulatePhaserFilter(lfo1phaserRate->get(), lfo1phaserDepth->get(), lfo1phaserCenterFreq->get(), lfo1phaserDepth->get(), lfo1phaserMix->get(), lfo1Output, phaserParams);
 
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
@@ -297,13 +293,18 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
-    filters.updatePhaserParams(phaserRate->get(), phaserDepth->get(), phaserCenterFreq->get(), phaserFeedback->get(), phaserMix->get());
+    filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
+
+    DBG("Depth" << phaserParams[1]);
 
     if(!bypassFilter->get())
         filters.process(buffer);
     
     for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
         filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
+
+    //lfo1.modulateADSR(lfo1attack1->get(), attack1->get(), lfo1sustain1->get(), lfo1release1->get(), lfo1Output);
+
 
     globalGain.processCtx(buffer);
 
@@ -341,6 +342,27 @@ void SimpleSynthAudioProcessor::setStateInformation (const void* data, int sizeI
     if (tree.isValid()) {
         apvts.replaceState(tree);
     }
+}
+
+void SimpleSynthAudioProcessor::fillArrays()
+{
+    //Select Wave Type
+    wavetype1[0] = sine1->get();
+    wavetype1[1] = saw1->get();
+    wavetype1[2] = square1->get();
+    wavetype1[3] = triangle1->get();
+
+    wavetype2[0] = sine2->get();
+    wavetype2[1] = saw2->get();
+    wavetype2[2] = square2->get();
+    wavetype2[3] = triangle2->get();
+
+    //Set Phaser for LFO
+    phaserParams[0] = phaserRate->get();
+    phaserParams[1] = phaserDepth->get();
+    phaserParams[2] = phaserCenterFreq->get();
+    phaserParams[3] = phaserFeedback->get();
+    phaserParams[4] = phaserMix->get();
 }
 
 float SimpleSynthAudioProcessor::getOutRMS(int channel)
@@ -448,7 +470,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserCenterFreq", "LFO1 Phaser Center Frequency", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserFeedback", "LFO1 Phaser Feedback", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserMix", "LFO1 Phaser Mix", zeroToOne, 0));
-    layout.add(std::make_unique<AudioParameterFloat>("lfo1Rate", "LFO1 Rate", lfoRange, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1Rate", "LFO1 Rate", lfoRange, 1));
 
     return layout;
 }

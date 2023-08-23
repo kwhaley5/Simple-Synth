@@ -13,6 +13,7 @@
 #include "SynthVoice.h"
 #include "DSP/filterData.h"
 #include "DSP/globalGain.h"
+#include "DSP/lfoData.h"
 
 //==============================================================================
 /**
@@ -61,6 +62,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    void fillArrays();
     float getOutRMS(int channel);
 
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
@@ -74,6 +76,7 @@ private:
     juce::Synthesiser synth1;
     juce::Synthesiser synth2;
     FilterData filters;
+    lfoData lfo1;
 
     //Globas Var
     juce::AudioParameterFloat* gGain{ nullptr };
@@ -130,6 +133,7 @@ private:
     juce::AudioParameterFloat* phaserCenterFreq{ nullptr };
     juce::AudioParameterFloat* phaserFeedback{ nullptr };
     juce::AudioParameterFloat* phaserMix{ nullptr };
+    std::array<float, 5> phaserParams;
 
     //Comb Params
     juce::AudioParameterFloat* combFreq{ nullptr };
@@ -164,6 +168,8 @@ private:
     juce::AudioParameterFloat* lfo1phaserMix{ nullptr };
 
     juce::AudioParameterFloat* lfo1Rate{ nullptr };
+
+    float lfo1Output;
 
     //RoadMap:
         //Bypass Buttons: DONE
