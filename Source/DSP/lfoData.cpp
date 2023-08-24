@@ -39,37 +39,77 @@ float lfoData::processNextBlock(juce::AudioBuffer<float>& buffer)
     }
 }
 
+void lfoData::setWaveType(std::array<bool, 4>& array)
+{
+    if (array[0])
+        initialise([](float x) { return std::sin(x); });
+    else if (array[1])
+        initialise([](float x) { return x / juce::MathConstants<float>::pi; });
+    else if (array[2])
+        initialise([](float x) { return x < 0.0f ? -1.f : 1.f; });
+    else
+        initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
+}
+
 void lfoData::setRate(float rate)
 {
     setFrequency(rate);
 }
 
-void lfoData::modulateADSR(float attack, float decay, float sustain, float release, float output)
+void lfoData::modulateADSR(float attack, float decay, float sustain, float release, float gain, float output, std::array<float, 5>& params)
 {
     auto newAttackParam = juce::jmap(attack, 0.f, 1.f, 0.f, 5.f);
     newAttackParam *= output;
-    decay += newAttackParam;
-    DBG("attack " << decay);
+    params[0] += newAttackParam;
+    params[0] = std::fmin(std::fmax(params[0], 0), 5);
+
+    auto neweDecayParam = juce::jmap(decay, 0.f, 1.f, 0.f, 5.f);
+    neweDecayParam *= output;
+    params[1] += neweDecayParam;
+    params[1] = std::fmin(std::fmax(params[1], 0), 5);
+
+    auto newSustainParam = output * sustain;
+    newSustainParam *= output;
+    params[2] += newSustainParam;
+    params[2] = std::fmin(std::fmax(params[2], 0), 1);
+
+    auto newReleaseParam = juce::jmap(release, 0.f, 1.f, 0.f, 5.f);
+    newReleaseParam *= output;
+    params[3] += newReleaseParam;
+    params[3] = std::fmin(std::fmax(params[3], 0), 5);
+
+    auto newGainParam = juce::jmap(release, 0.f, 1.f, -60.f, 6.f);
+    newGainParam *= output;
+    params[4] += newGainParam;
+    params[4] = std::fmin(std::fmax(params[4], -60), 6);
+
+
 }
 
 void lfoData::modulatePhaserFilter(float rate, float depth, float centerFrq, float feedback, float mix, float output, std::array<float, 5>& params)
 {
-    auto newRateParam = juce::jmap(rate, 0.f, 1.f, .1f, 10.f);
+    auto newRateParam = juce::jmap(rate, 0.f, 1.f, 0.f, 10.f);
     newRateParam *= output;
     params[0] += newRateParam;
+    params[0] = std::fmin(std::fmax(params[1], 0), 10);
 
     auto newDepthParam = output * depth;
+    auto orgDepth = params[1];
     params[1] += newDepthParam;
+    params[1] = std::fmin(std::fmax(params[1], 0), 1);
 
-    auto newCenterFreqParam = juce::jmap(rate, 0.f, 1.f, 20.f, 20000.f);
+    auto newCenterFreqParam = juce::jmap(centerFrq, 0.f, 1.f, 20.f, 20000.f);
     newCenterFreqParam *= output;
     params[2] += newCenterFreqParam;
+    params[2] = std::fmin(std::fmax(params[1], 20), 20000);
 
-    auto newFeedbackParam = juce::jmap(rate, 0.f, 1.f, -1.f, 1.f);
+    auto newFeedbackParam = juce::jmap(feedback, 0.f, 1.f, -1.f, 1.f);
     newFeedbackParam *= output;
     params[3] += newFeedbackParam;
+    params[3] = std::fmin(std::fmax(params[1], -1), 1);
 
     auto newMixParam = output * mix;
     params[4] += newMixParam;
+    params[4] = std::fmin(std::fmax(params[1], 0), 1);
 
 }

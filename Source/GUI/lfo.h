@@ -26,6 +26,8 @@ struct LFOComp : public juce::Component
 
     void setLeft(juce::Rectangle<int>& bounds);
 
+    void updateToggleState(juce::Button* button);
+
 private:
 
     Laf lnf;

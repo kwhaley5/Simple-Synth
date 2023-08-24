@@ -92,6 +92,7 @@ private:
     juce::AudioParameterFloat* sustain1{nullptr};
     juce::AudioParameterFloat* release1{nullptr};
     juce::AudioParameterFloat* oscGain1{nullptr};
+    std::array<float, 5> osc1Params;
 
     //Osc1 Wave Type
     juce::AudioParameterBool* sine1{nullptr};
@@ -106,6 +107,7 @@ private:
     juce::AudioParameterFloat* sustain2{nullptr};
     juce::AudioParameterFloat* release2{nullptr};
     juce::AudioParameterFloat* oscGain2{nullptr};
+    std::array<float, 5> osc2Params;
 
     //Osc 2 Wave Type
     juce::AudioParameterBool* sine2{nullptr};
@@ -168,6 +170,7 @@ private:
     juce::AudioParameterFloat* lfo1phaserMix{ nullptr };
 
     juce::AudioParameterFloat* lfo1Rate{ nullptr };
+    std::array<bool, 4> setLFO1Wave;
 
     float lfo1Output;
 

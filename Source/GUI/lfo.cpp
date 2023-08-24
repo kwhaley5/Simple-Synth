@@ -14,9 +14,9 @@ LFOComp::LFOComp(juce::AudioProcessorValueTreeState& apvts) :
     //LFO type and RAte
     sineAT(apvts, "lfo1sine", sine), sawAT(apvts, "lfo1saw", saw), squareAT(apvts, "lfo1square", square), triangleAT(apvts, "lfo1triangle", triangle), lfoRate1AT(apvts, "lfo1Rate", lfoRate1),
     //LFO1 OSC1 ADSR & Gain
-    attack1AT(apvts, "lfo1attack1", attack1), decay1AT(apvts, "lfo1decay1", decay1), sustain1AT(apvts, "lfo1sustain1", sustain1), release1AT(apvts, "lfo1release1", release1), gain1AT(apvts, "lfo1gain1", gain1),
+    attack1AT(apvts, "lfo1attack1", attack1), decay1AT(apvts, "lfo1decay1", decay1), sustain1AT(apvts, "lfo1sustain1", sustain1), release1AT(apvts, "lfo1release1", release1), gain1AT(apvts, "lfo1oscGain1", gain1),
     //LFO1 OSC2 ADSR & Gain
-    attack2AT(apvts, "lfo1attack2", attack2), decay2AT(apvts, "lfo1decay2", decay2), sustain2AT(apvts, "lfo1sustain2", sustain2), release2AT(apvts, "lfo1release2", release2), gain2AT(apvts, "lfo1gain2", gain2),
+    attack2AT(apvts, "lfo1attack2", attack2), decay2AT(apvts, "lfo1decay2", decay2), sustain2AT(apvts, "lfo1sustain2", sustain2), release2AT(apvts, "lfo1release2", release2), gain2AT(apvts, "lfo1oscGain2", gain2),
     //LFO 1 Phaser Params
     rateAT(apvts, "lfo1phaserRate", rate), depthAT(apvts, "lfo1phaserDepth", depth), centerFreqAT(apvts, "lfo1phaserCenterFreq", centerFreq), pFeedbackAT(apvts, "lfo1phaserFeedback", pFeedback), pMixAT(apvts, "lfo1phaserMix", pMix)
 {
@@ -29,6 +29,16 @@ LFOComp::LFOComp(juce::AudioProcessorValueTreeState& apvts) :
     addAndMakeVisible(square);
     addAndMakeVisible(triangle);
     setSlider(lfoRate1);
+
+    sine.onClick = [this] {updateToggleState(&sine); };
+    saw.onClick = [this] {updateToggleState(&saw); };
+    square.onClick = [this] {updateToggleState(&square); };
+    triangle.onClick = [this] {updateToggleState(&triangle); };
+
+    sine.setRadioGroupId(1);
+    saw.setRadioGroupId(1);
+    square.setRadioGroupId(1);
+    triangle.setRadioGroupId(1);
     
     setRotarySlider(attack1);
     setRotarySlider(decay1);
@@ -160,4 +170,9 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
     Osc1.setBounds(adsr1Area.getX(), adsr1Area.getY() - 5, adsr1Area.getWidth(), adsr1Area.getHeight());
     Osc2.setBounds(adsr2Area.getX(), adsr2Area.getY() - 5, adsr2Area.getWidth(), adsr2Area.getHeight());
     Filter.setBounds(filterArea.getX(), filterArea.getY() - 5, filterArea.getWidth(), filterArea.getHeight());
+}
+
+void LFOComp::updateToggleState(juce::Button* button)
+{
+    auto state = button->getToggleState();
 }

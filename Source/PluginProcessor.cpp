@@ -261,8 +261,11 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     globalGain.setGain(gGain->get());
 
+    lfo1.setWaveType(setLFO1Wave);
     lfo1.setRate(lfo1Rate->get());
     lfo1Output = lfo1.processNextBlock(buffer);
+    lfo1.modulateADSR(lfo1attack1->get(), lfo1decay1->get(), lfo1sustain1->get(), lfo1release1->get(), lfo1oscGain1->get(), lfo1Output, osc1Params);
+    lfo1.modulateADSR(lfo1attack2->get(), lfo1decay2->get(), lfo1sustain2->get(), lfo1release2->get(), lfo1oscGain2->get(), lfo1Output, osc2Params);
     lfo1.modulatePhaserFilter(lfo1phaserRate->get(), lfo1phaserDepth->get(), lfo1phaserCenterFreq->get(), lfo1phaserDepth->get(), lfo1phaserMix->get(), lfo1Output, phaserParams);
 
     for (int i = 0; i < synth1.getNumVoices(); ++i)
@@ -270,7 +273,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
             //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
-            voice->update(attack1->get(), decay1->get(), sustain1->get(), release1->get(), oscGain1->get());
+            voice->update(osc1Params[0], osc1Params[1], osc1Params[2], osc1Params[3], osc1Params[4]);
             voice->getOscillator().setWaveType(wavetype1);
             if(fmOsc->get())
                 voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), wavetype2);
@@ -282,7 +285,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
         {
             //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
-            voice->update(attack2->get(), decay2->get(), sustain2->get(), release2->get(), oscGain2->get());
+            voice->update(osc2Params[0], osc2Params[1], osc2Params[2], osc2Params[3], osc2Params[4]);
             voice->getOscillator().setWaveType(wavetype2);
         }
     }
@@ -295,7 +298,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
     filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
 
-    DBG("Depth" << phaserParams[1]);
+    DBG("Attack" << osc1Params[0]);
 
     if(!bypassFilter->get())
         filters.process(buffer);
@@ -346,16 +349,37 @@ void SimpleSynthAudioProcessor::setStateInformation (const void* data, int sizeI
 
 void SimpleSynthAudioProcessor::fillArrays()
 {
-    //Select Wave Type
+    //Select Osc 1 Wave Type
     wavetype1[0] = sine1->get();
     wavetype1[1] = saw1->get();
     wavetype1[2] = square1->get();
     wavetype1[3] = triangle1->get();
 
+    //Select Osc 2 Wave Type
     wavetype2[0] = sine2->get();
     wavetype2[1] = saw2->get();
     wavetype2[2] = square2->get();
     wavetype2[3] = triangle2->get();
+
+    //Select LFO 1 Wave Type
+    setLFO1Wave[0] = lfo1sine->get();
+    setLFO1Wave[1] = lfo1saw->get();
+    setLFO1Wave[2] = lfo1square->get();
+    setLFO1Wave[3] = lfo1triangle->get();
+
+    //Set Osc 1 ADSR
+    osc1Params[0] = attack1->get();
+    osc1Params[1] = decay1->get();
+    osc1Params[2] = sustain1->get();
+    osc1Params[3] = release1->get();
+    osc1Params[4] = oscGain1->get();
+
+    //set Osc 2 ADSR
+    osc2Params[0] = attack2->get();
+    osc2Params[1] = decay2->get();
+    osc2Params[2] = sustain2->get();
+    osc2Params[3] = release2->get();
+    osc2Params[4] = oscGain2->get();
 
     //Set Phaser for LFO
     phaserParams[0] = phaserRate->get();
@@ -459,12 +483,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("lfo1decay1", "LFO1 Osc 1 Decay", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1sustain1", "LFO1 Osc 1 Sustain", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1release1", "LFO1 Osc 1 Release", zeroToOne, 0));
-    layout.add(std::make_unique<AudioParameterFloat>("lfo1gain1", "LFO1 Osc 1 Gain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1oscGain1", "LFO1 Osc 1 Gain", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1attack2", "LFO1 Osc 2 Attack", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1decay2", "LFO1 Osc 2 Decay", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1sustain2", "LFO1 Osc 2 Sustain", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1release2", "LFO1 Osc 2 Release", zeroToOne, 0));
-    layout.add(std::make_unique<AudioParameterFloat>("lfo1gain2", "LFO1 Osc 2 Gain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo1oscGain2", "LFO1 Osc 2 Gain", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserRate", "LFO1 Phaser Rate", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserDepth", "LFO1 Phaser Depth", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("lfo1phaserCenterFreq", "LFO1 Phaser Center Frequency", zeroToOne, 0));
