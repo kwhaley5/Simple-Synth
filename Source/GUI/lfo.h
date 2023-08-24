@@ -25,6 +25,7 @@ struct LFOComp : public juce::Component
     void setGroupComp(juce::GroupComponent&);
 
     void setLeft(juce::Rectangle<int>& bounds);
+    void setRight(juce::Rectangle<int>& bounds);
 
     void updateToggleState(juce::Button* button);
     void getComboValue(int combo);
@@ -75,6 +76,7 @@ private:
                        square2   { "Square" },
                        saw2      { "Saw" },
                        triangle2 { "Triangle" };
+    juce::AudioProcessorValueTreeState::ButtonAttachment sine2AT, square2AT, saw2AT, triangle2AT;
 
     juce::Slider       attack12  { "O1 Attack" },
                        decay12   { "O1 Decay" },
@@ -88,9 +90,9 @@ private:
                        release22 { "O2 Release" },
                        gain22    { "O2 Gain" };
 
-    //juce::Slider       cutoff2    { "Ladder Cutoff" },
-    //                   resonance2 { "Ladder Resonance" },
-    //                   drive2     { "Ladder Drive" };
+    juce::Slider       cutoff2    { "Ladder Cutoff" },
+                       resonance2 { "Ladder Resonance" },
+                       drive2     { "Ladder Drive" };
 
     juce::Slider       rate2       { "Phaser Rate" },
                        depth2      { "Phaser Depth" },
@@ -98,17 +100,27 @@ private:
                        pFeedback2  { "Phaser Feedback" },
                        pMix2       { "Phaser Mix" };
 
-    //juce::Slider       freq2       { "Comb Freq" },
-    //                   cFeedback2  { "Comb Feedback" },
-    //                   cGain2      { "Comb Gain" },
-    //                   cMix2       { "Comb Mix" };
+    juce::Slider       freq2       { "Comb Freq" },
+                       cFeedback2  { "Comb Feedback" },
+                       cGain2      { "Comb Gain" },
+                       cMix2       { "Comb Mix" };
+    juce::AudioProcessorValueTreeState::SliderAttachment attack12AT, decay12AT,    sustain12AT, release12AT, gain12AT,
+                                                         attack22AT, decay22AT,    sustain22AT, release22AT, gain22AT,
+                                                         cutoff2AT,  resonance2AT, drive2AT,
+                                                         rate2AT,    depth2AT,     centerFreq2AT, pFeedback2AT, pMix2AT,
+                                                         freq2AT,    cFeedback2AT, cGain2AT,      cMix2AT;   
 
     juce::Slider lfoRate1, lfoRate2;
-    juce::AudioProcessorValueTreeState::SliderAttachment lfoRate1AT;
+    juce::AudioProcessorValueTreeState::SliderAttachment lfoRate1AT, lfoRate2AT;
 
     juce::GroupComponent Osc1{ "Osc 1", "Osc 1" };
     juce::GroupComponent Osc2{ "Osc 2", "Osc 2" };
     juce::GroupComponent Filter{"Filter", "Filter"};
+
+    juce::GroupComponent Osc12{ "Osc 1", "Osc 1" };
+    juce::GroupComponent Osc22{ "Osc 2", "Osc 2" };
+    juce::GroupComponent Filter2{ "Filter", "Filter" };
+
     juce::TooltipWindow name{ this, 100 };
 
     juce::Slider comboChange;

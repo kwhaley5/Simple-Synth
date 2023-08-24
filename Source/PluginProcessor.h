@@ -184,8 +184,45 @@ private:
 
     juce::AudioParameterFloat* lfo1Rate{ nullptr };
     std::array<bool, 4> setLFO1Wave;
-
     float lfo1Output;
+
+    //LFO1 Wave Types
+    juce::AudioParameterBool* lfo2sine{ nullptr };
+    juce::AudioParameterBool* lfo2saw{ nullptr };
+    juce::AudioParameterBool* lfo2square{ nullptr };
+    juce::AudioParameterBool* lfo2triangle{ nullptr };
+
+    //LFO2 Modulators
+    juce::AudioParameterFloat* lfo2attack1{ nullptr };
+    juce::AudioParameterFloat* lfo2decay1{ nullptr };
+    juce::AudioParameterFloat* lfo2sustain1{ nullptr };
+    juce::AudioParameterFloat* lfo2release1{ nullptr };
+    juce::AudioParameterFloat* lfo2oscGain1{ nullptr };
+
+    juce::AudioParameterFloat* lfo2attack2{ nullptr };
+    juce::AudioParameterFloat* lfo2decay2{ nullptr };
+    juce::AudioParameterFloat* lfo2sustain2{ nullptr };
+    juce::AudioParameterFloat* lfo2release2{ nullptr };
+    juce::AudioParameterFloat* lfo2oscGain2{ nullptr };
+
+    juce::AudioParameterFloat* lfo2ladderFreq{ nullptr };
+    juce::AudioParameterFloat* lfo2ladderRes{ nullptr };
+    juce::AudioParameterFloat* lfo2ladderDrive{ nullptr };
+
+    juce::AudioParameterFloat* lfo2phaserRate{ nullptr };
+    juce::AudioParameterFloat* lfo2phaserDepth{ nullptr };
+    juce::AudioParameterFloat* lfo2phaserCenterFreq{ nullptr };
+    juce::AudioParameterFloat* lfo2phaserFeedback{ nullptr };
+    juce::AudioParameterFloat* lfo2phaserMix{ nullptr };
+
+    juce::AudioParameterFloat* lfo2combFreq{ nullptr };
+    juce::AudioParameterFloat* lfo2combFeedback{ nullptr };
+    juce::AudioParameterFloat* lfo2combGain{ nullptr };
+    juce::AudioParameterFloat* lfo2combMix{ nullptr };
+
+    juce::AudioParameterFloat* lfo2Rate{ nullptr };
+    std::array<bool, 4> setLFO2Wave;
+    float lfo2Output;
 
     //RoadMap:
         //Bypass Buttons: DONE

@@ -123,8 +123,37 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     lfo1combGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1combGain"));
     lfo1combMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1combMix"));
 
-
     lfo1Rate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo1Rate"));
+
+    //LFO 1 Params
+    lfo2attack1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2attack1"));
+    lfo2decay1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2decay1"));
+    lfo2sustain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2sustain1"));
+    lfo2release1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2release1"));
+    lfo2oscGain1 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2oscGain1"));
+
+    lfo2attack2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2attack2"));
+    lfo2decay2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2decay2"));
+    lfo2sustain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2sustain2"));
+    lfo2release2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2release2"));
+    lfo2oscGain2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2oscGain2"));
+
+    lfo2ladderFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2ladderFreq"));
+    lfo2ladderRes = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2ladderRes"));
+    lfo2ladderDrive = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2ladderDrive"));
+
+    lfo2phaserRate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2phaserRate"));
+    lfo2phaserDepth = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2phaserDepth"));
+    lfo2phaserCenterFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2phaserCenterFreq"));
+    lfo2phaserFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2phaserFeedback"));
+    lfo2phaserMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2phaserMix"));
+
+    lfo2combFreq = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2combFreq"));
+    lfo2combFeedback = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2combFeedback"));
+    lfo2combGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2combGain"));
+    lfo2combMix = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2combMix"));
+
+    lfo2Rate = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lfo2Rate"));
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -321,8 +350,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
             filters.processComb(ch, buffer, combParams[0], combParams[1], combParams[2], combParams[3], getSampleRate());
     }
-
-    DBG("Comb Freq" << combParams[0]);
 
     globalGain.processCtx(buffer);
 
@@ -533,6 +560,42 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("lfo1combMix", "LFO1 Comb Mix", zeroToOne, 0));
 
     layout.add(std::make_unique<AudioParameterFloat>("lfo1Rate", "LFO1 Rate", lfoRange, 1));
+
+    //LFO2 wavetype
+    layout.add(std::make_unique<AudioParameterBool>("lfo2sine", "LFO 2 Sine Wave", true));
+    layout.add(std::make_unique<AudioParameterBool>("lfo2saw", "LFO 2 Saw Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("lfo2square", "LFO 2 Square Wave", false));
+    layout.add(std::make_unique<AudioParameterBool>("lfo2triangle", "LFO 2 Triangle Wave", false));
+
+    //LFO2
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2attack1", "LFO2 Osc 1 Attack", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2decay1", "LFO2 Osc 1 Decay", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2sustain1", "LFO2 Osc 1 Sustain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2release1", "LFO2 Osc 1 Release", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2oscGain1", "LFO2 Osc 1 Gain", zeroToOne, 0));
+
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2attack2", "LFO2 Osc 2 Attack", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2decay2", "LFO2 Osc 2 Decay", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2sustain2", "LFO2 Osc 2 Sustain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2release2", "LFO2 Osc 2 Release", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2oscGain2", "LFO2 Osc 2 Gain", zeroToOne, 0));
+
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2ladderFreq", "LFO2 Ladder Cuttoff", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2ladderRes", "LFO2 Ladder Resonance", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2ladderDrive", "LFO2 Ladder Drive", zeroToOne, 0));
+
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2phaserRate", "LFO2 Phaser Rate", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2phaserDepth", "LFO2 Phaser Depth", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2phaserCenterFreq", "LFO2 Phaser Center Frequency", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2phaserFeedback", "LFO2 Phaser Feedback", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2phaserMix", "LFO2 Phaser Mix", zeroToOne, 0));
+
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2combFreq", "LFO2 Comb Frequency", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2combFeedback", "LFO2 Comb Feedback", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2combGain", "LFO2 Comb Gain", zeroToOne, 0));
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2combMix", "LFO2 Comb Mix", zeroToOne, 0));
+
+    layout.add(std::make_unique<AudioParameterFloat>("lfo2Rate", "LFO2 Rate", lfoRange, 1));
 
     return layout;
 }
