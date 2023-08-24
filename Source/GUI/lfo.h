@@ -27,6 +27,8 @@ struct LFOComp : public juce::Component
     void setLeft(juce::Rectangle<int>& bounds);
 
     void updateToggleState(juce::Button* button);
+    void getComboValue(int combo);
+    int setComboValue();
 
 private:
 
@@ -50,9 +52,9 @@ private:
                        release2 { "O2 Release" },
                        gain2    { "O2 Gain" };
 
-    //juce::Slider       cutoff    { "Ladder Cutoff" },
-    //                   resonance { "Ladder Resonance" },
-    //                   drive     { "Ladder Drive" };
+    juce::Slider       cutoff    { "Ladder Cutoff" },
+                       resonance { "Ladder Resonance" },
+                       drive     { "Ladder Drive" };
 
     juce::Slider       rate       { "Phaser Rate" },
                        depth      { "Phaser Depth" },
@@ -60,10 +62,10 @@ private:
                        pFeedback  { "Phaser Feedback" },
                        pMix       { "Phaser Mix" };
 
-    //juce::Slider       freq       { "Comb Freq" },
-    //                   cFeedback  { "Comb Feedback" },
-    //                   cGain      { "Comb Gain" },
-    //                   cMix       { "Comb Mix" };
+    juce::Slider       freq       { "comb freq" },
+                       cFeedback  { "comb feedback" },
+                       cGain      { "comb gain" },
+                       cMix       { "comb mix" };
     juce::AudioProcessorValueTreeState::SliderAttachment attack1AT, decay1AT, sustain1AT, release1AT, gain1AT, attack2AT, decay2AT, sustain2AT, release2AT, gain2AT, rateAT, depthAT, centerFreqAT, pFeedbackAT, pMixAT;
 
     juce::ToggleButton sine2     { "Sine" },
@@ -105,4 +107,8 @@ private:
     juce::GroupComponent Osc2{ "Osc 2", "Osc 2" };
     juce::GroupComponent Filter{"Filter", "Filter"};
     juce::TooltipWindow name{ this, 100 };
+
+    juce::Slider comboChange;
+
+    int comboValue{ 1 };
 };

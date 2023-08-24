@@ -20,7 +20,6 @@ LFOComp::LFOComp(juce::AudioProcessorValueTreeState& apvts) :
     //LFO 1 Phaser Params
     rateAT(apvts, "lfo1phaserRate", rate), depthAT(apvts, "lfo1phaserDepth", depth), centerFreqAT(apvts, "lfo1phaserCenterFreq", centerFreq), pFeedbackAT(apvts, "lfo1phaserFeedback", pFeedback), pMixAT(apvts, "lfo1phaserMix", pMix)
 {
-    
 
     setLookAndFeel(&lnf);
 
@@ -53,20 +52,75 @@ LFOComp::LFOComp(juce::AudioProcessorValueTreeState& apvts) :
     setRotarySlider(gain1);
     setRotarySlider(gain2);
 
-    /*setRotarySlider(cutoff);
+    setRotarySlider(cutoff);
     setRotarySlider(resonance);
-    setRotarySlider(drive);*/
-
+    setRotarySlider(drive);
+ 
     setRotarySlider(rate);
     setRotarySlider(depth);
     setRotarySlider(centerFreq);
     setRotarySlider(pFeedback);
     setRotarySlider(pMix);
 
-    //setRotarySlider(freq);
-    //setRotarySlider(cFeedback);
-    //setRotarySlider(cGain);
-    //setRotarySlider(cMix);
+    setRotarySlider(freq);
+    setRotarySlider(cFeedback);
+    setRotarySlider(cGain);
+    setRotarySlider(cMix);
+
+    comboChange.onValueChange = [this]()
+        {
+            if (comboChange.getValue() == 1)
+            {
+                cutoff.setVisible(true);
+                resonance.setVisible(true);
+                drive.setVisible(true);
+
+                rate.setVisible(false);
+                depth.setVisible(false);
+                centerFreq.setVisible(false);
+                pFeedback.setVisible(false);
+                pMix.setVisible(false);
+
+                freq.setVisible(false);
+                cFeedback.setVisible(false);
+                cGain.setVisible(false);
+                cMix.setVisible(false);
+            }
+            else if (comboChange.getValue() == 2)
+            {
+                cutoff.setVisible(false);
+                resonance.setVisible(false);
+                drive.setVisible(false);
+
+                rate.setVisible(true);
+                depth.setVisible(true);
+                centerFreq.setVisible(true);
+                pFeedback.setVisible(true);
+                pMix.setVisible(true);
+
+                freq.setVisible(false);
+                cFeedback.setVisible(false);
+                cGain.setVisible(false);
+                cMix.setVisible(false);
+            }
+            else
+            {
+                cutoff.setVisible(false);
+                resonance.setVisible(false);
+                drive.setVisible(false);
+
+                rate.setVisible(false);
+                depth.setVisible(false);
+                centerFreq.setVisible(false);
+                pFeedback.setVisible(false);
+                pMix.setVisible(false);
+
+                freq.setVisible(true);
+                cFeedback.setVisible(true);
+                cGain.setVisible(true);
+                cMix.setVisible(true);
+            }
+        };
 
     setGroupComp(Osc1);
     setGroupComp(Osc2);
@@ -128,7 +182,9 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
     auto buttonArea = bounds.removeFromLeft(bounds.getHeight() * .15);
     auto adsr1Area = bounds.removeFromTop(bounds.getHeight() * .33);
     auto adsr2Area = bounds.removeFromTop(bounds.getHeight() * .5);
-    auto filterArea = bounds;
+    auto filterAreaLadder = bounds;
+    auto filterAreaPhaser = bounds;
+    auto filterAreaComb = bounds;
 
     juce::FlexBox flexbox;
     flexbox.flexDirection = juce::FlexBox::Direction::column;
@@ -159,20 +215,71 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
     flexbox.items.add(juce::FlexItem(gain2).withFlex(1.f));
     flexbox.performLayout(adsr2Area);
 
-    flexbox.items.clear();
-    flexbox.items.add(juce::FlexItem(rate).withFlex(1.f));
-    flexbox.items.add(juce::FlexItem(depth).withFlex(1.f));
-    flexbox.items.add(juce::FlexItem(centerFreq).withFlex(1.f));
-    flexbox.items.add(juce::FlexItem(pFeedback).withFlex(1.f));
-    flexbox.items.add(juce::FlexItem(pMix).withFlex(1.f));
-    flexbox.performLayout(filterArea);
+    auto cutoffArea = filterAreaLadder.removeFromLeft(filterAreaLadder.getWidth() * .33);
+    cutoff.setBounds(cutoffArea);
+    auto resArea = filterAreaLadder.removeFromLeft(filterAreaLadder.getWidth() * .5);
+    resonance.setBounds(resArea);
+    auto driveArea = filterAreaLadder.removeFromLeft(filterAreaLadder.getWidth());
+    drive.setBounds(driveArea);
+
+    auto rateArea = filterAreaPhaser.removeFromLeft(filterAreaPhaser.getWidth() * .2);
+    rate.setBounds(rateArea);
+    auto depthArea = filterAreaPhaser.removeFromLeft(filterAreaPhaser.getWidth() * .25);
+    depth.setBounds(depthArea);
+    auto centerFreqArea = filterAreaPhaser.removeFromLeft(filterAreaPhaser.getWidth() * .33);
+    centerFreq.setBounds(centerFreqArea);
+    auto feedbackArea = filterAreaPhaser.removeFromLeft(filterAreaPhaser.getWidth() * .5);
+    pFeedback.setBounds(feedbackArea);
+    auto mixArea = filterAreaPhaser.removeFromLeft(filterAreaPhaser.getWidth());
+    pMix.setBounds(mixArea);
+
+    auto freqAreaComb = filterAreaComb.removeFromLeft(filterAreaComb.getWidth() * .25);
+    freq.setBounds(freqAreaComb);
+    auto feedbackAreaComb = filterAreaComb.removeFromLeft(filterAreaComb.getWidth() * .33);
+    cFeedback.setBounds(feedbackAreaComb);
+    auto gainAreaComb = filterAreaComb.removeFromLeft(filterAreaComb.getWidth() * .5);
+    cGain.setBounds(gainAreaComb);
+    auto mixAreaComb = filterAreaComb.removeFromLeft(filterAreaComb.getWidth());
+    cMix.setBounds(mixAreaComb);
+
+    /*if (cutoff.isVisible())
+    {
+        flexbox.items.clear();
+        flexbox.items.add(juce::FlexItem(cutoff).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(resonance).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(drive).withFlex(1.f));
+    }
+    else if (rate.isVisible())
+    {
+        flexbox.items.clear();
+        flexbox.items.add(juce::FlexItem(rate).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(depth).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(centerFreq).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(pFeedback).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(pMix).withFlex(1.f));
+    }
+    else if(freq.isVisible())
+    {
+        flexbox.items.clear();
+        flexbox.items.add(juce::FlexItem(freq).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(cFeedback).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(cGain).withFlex(1.f));
+        flexbox.items.add(juce::FlexItem(cMix).withFlex(1.f));
+    }
+
+    flexbox.performLayout(filterArea);*/
 
     Osc1.setBounds(adsr1Area.getX(), adsr1Area.getY() - 5, adsr1Area.getWidth(), adsr1Area.getHeight());
     Osc2.setBounds(adsr2Area.getX(), adsr2Area.getY() - 5, adsr2Area.getWidth(), adsr2Area.getHeight());
-    Filter.setBounds(filterArea.getX(), filterArea.getY() - 5, filterArea.getWidth(), filterArea.getHeight());
+    Filter.setBounds(bounds.getX(), bounds.getY() - 5, bounds.getWidth(), bounds.getHeight());
 }
 
 void LFOComp::updateToggleState(juce::Button* button)
 {
     auto state = button->getToggleState();
+}
+
+void LFOComp::getComboValue(int combo)
+{
+    comboChange.setValue(combo);
 }

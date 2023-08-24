@@ -298,16 +298,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderFreq->get(), ladderRes->get(), ladderDrive->get());
     filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
 
-    DBG("Attack" << osc1Params[0]);
+    //DBG("Attack" << osc1Params[0]);
 
     if(!bypassFilter->get())
         filters.process(buffer);
     
     for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
         filters.processComb(ch, buffer, combFreq->get(), combFeedback->get(), combGain->get(), combMix->get(), getSampleRate());
-
-    //lfo1.modulateADSR(lfo1attack1->get(), attack1->get(), lfo1sustain1->get(), lfo1release1->get(), lfo1Output);
-
 
     globalGain.processCtx(buffer);
 

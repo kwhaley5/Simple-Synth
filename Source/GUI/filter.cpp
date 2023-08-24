@@ -198,3 +198,8 @@ void FilterComp::setRotarySlider(juce::Slider& slider)
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
     addAndMakeVisible(slider);
 }
+
+int FilterComp::getComboValue()
+{
+    return filterType.getSelectedId();
+}

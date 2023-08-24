@@ -23,7 +23,7 @@ struct FilterComp : public juce::Component
     void setSlider(juce::Slider&);
     void setHorzSlider(juce::Slider&);
     void setRotarySlider(juce::Slider&);
-    void updateToggleState(juce::Button*);
+    int getComboValue();
 
 private:
     Laf lnf;

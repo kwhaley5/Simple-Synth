@@ -91,6 +91,7 @@ void SimpleSynthAudioProcessorEditor::timerCallback()
     };
 
     globalControls.update(values);
+    lfoComp.getComboValue(filterComp.getComboValue());   
 }
 
 void SimpleSynthAudioProcessorEditor::setKeyboard()
