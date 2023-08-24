@@ -77,6 +77,7 @@ private:
     juce::Synthesiser synth2;
     FilterData filters;
     lfoData lfo1;
+    lfoData lfo2;
 
     //Globas Var
     juce::AudioParameterFloat* gGain{ nullptr };
