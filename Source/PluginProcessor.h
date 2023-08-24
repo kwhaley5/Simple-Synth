@@ -128,6 +128,7 @@ private:
     juce::AudioParameterFloat* ladderFreq{nullptr};
     juce::AudioParameterFloat* ladderRes{nullptr};
     juce::AudioParameterFloat* ladderDrive{nullptr};
+    std::array<float, 3> ladderParams;
 
     //Phaser Params
     juce::AudioParameterFloat* phaserRate{ nullptr };
@@ -142,6 +143,7 @@ private:
     juce::AudioParameterFloat* combFeedback{ nullptr };
     juce::AudioParameterFloat* combGain{ nullptr };
     juce::AudioParameterFloat* combMix{ nullptr };
+    std::array<float, 4> combParams;
 
     //RMS Out
     std::array<std::atomic<float>, 2> rmsOut{ -60, -60 };
@@ -158,16 +160,27 @@ private:
     juce::AudioParameterFloat* lfo1sustain1{ nullptr };
     juce::AudioParameterFloat* lfo1release1{ nullptr };
     juce::AudioParameterFloat* lfo1oscGain1{ nullptr };
+
     juce::AudioParameterFloat* lfo1attack2{ nullptr };
     juce::AudioParameterFloat* lfo1decay2{ nullptr };
     juce::AudioParameterFloat* lfo1sustain2{ nullptr };
     juce::AudioParameterFloat* lfo1release2{ nullptr };
     juce::AudioParameterFloat* lfo1oscGain2{ nullptr };
+
+    juce::AudioParameterFloat* lfo1ladderFreq{ nullptr };
+    juce::AudioParameterFloat* lfo1ladderRes{ nullptr };
+    juce::AudioParameterFloat* lfo1ladderDrive{ nullptr };
+
     juce::AudioParameterFloat* lfo1phaserRate{ nullptr };
     juce::AudioParameterFloat* lfo1phaserDepth{ nullptr };
     juce::AudioParameterFloat* lfo1phaserCenterFreq{ nullptr };
     juce::AudioParameterFloat* lfo1phaserFeedback{ nullptr };
     juce::AudioParameterFloat* lfo1phaserMix{ nullptr };
+
+    juce::AudioParameterFloat* lfo1combFreq{ nullptr };
+    juce::AudioParameterFloat* lfo1combFeedback{ nullptr };
+    juce::AudioParameterFloat* lfo1combGain{ nullptr };
+    juce::AudioParameterFloat* lfo1combMix{ nullptr };
 
     juce::AudioParameterFloat* lfo1Rate{ nullptr };
     std::array<bool, 4> setLFO1Wave;

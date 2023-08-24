@@ -28,7 +28,6 @@ struct LFOComp : public juce::Component
 
     void updateToggleState(juce::Button* button);
     void getComboValue(int combo);
-    int setComboValue();
 
 private:
 
@@ -66,7 +65,11 @@ private:
                        cFeedback  { "comb feedback" },
                        cGain      { "comb gain" },
                        cMix       { "comb mix" };
-    juce::AudioProcessorValueTreeState::SliderAttachment attack1AT, decay1AT, sustain1AT, release1AT, gain1AT, attack2AT, decay2AT, sustain2AT, release2AT, gain2AT, rateAT, depthAT, centerFreqAT, pFeedbackAT, pMixAT;
+    juce::AudioProcessorValueTreeState::SliderAttachment attack1AT, decay1AT,    sustain1AT,   release1AT,  gain1AT, 
+                                                         attack2AT, decay2AT,    sustain2AT,   release2AT,  gain2AT,
+                                                         cutoffAT,  resonanceAT, driveAT,
+                                                         rateAT,    depthAT,     centerFreqAT, pFeedbackAT, pMixAT,
+                                                         freqAT,    cFeedbackAT, cGainAT,      cMixAT;
 
     juce::ToggleButton sine2     { "Sine" },
                        square2   { "Square" },
@@ -109,6 +112,4 @@ private:
     juce::TooltipWindow name{ this, 100 };
 
     juce::Slider comboChange;
-
-    int comboValue{ 1 };
 };

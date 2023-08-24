@@ -86,30 +86,68 @@ void lfoData::modulateADSR(float attack, float decay, float sustain, float relea
 
 }
 
+void lfoData::modulateLadderFilter(float cutoff, float resonance, float drive, float output, std::array<float, 3>& params)
+{
+    auto newCuttoffParam = juce::jmap(cutoff, 0.f, 1.f, 0.f, 19990.f);
+    newCuttoffParam *= output;
+    params[0] += newCuttoffParam;
+    params[0] = std::fmin(std::fmax(params[0], 20), 20000);
+
+    auto newResParam = output * resonance;
+    params[1] += newResParam;
+    params[1] = std::fmin(std::fmax(params[1], 0), 1);
+
+    auto newDriveParam = juce::jmap(drive, 0.f, 1.f, 0.f, 9.f);
+    newDriveParam *= output;
+    params[2] += newDriveParam;
+    params[2] = std::fmin(std::fmax(params[2], 1), 10);
+}
+
 void lfoData::modulatePhaserFilter(float rate, float depth, float centerFrq, float feedback, float mix, float output, std::array<float, 5>& params)
 {
     auto newRateParam = juce::jmap(rate, 0.f, 1.f, 0.f, 10.f);
     newRateParam *= output;
     params[0] += newRateParam;
-    params[0] = std::fmin(std::fmax(params[1], 0), 10);
+    params[0] = std::fmin(std::fmax(params[0], 0), 10);
 
     auto newDepthParam = output * depth;
-    auto orgDepth = params[1];
     params[1] += newDepthParam;
     params[1] = std::fmin(std::fmax(params[1], 0), 1);
 
-    auto newCenterFreqParam = juce::jmap(centerFrq, 0.f, 1.f, 20.f, 20000.f);
+    auto newCenterFreqParam = juce::jmap(centerFrq, 0.f, 1.f, 0.f, 19990.f);
     newCenterFreqParam *= output;
     params[2] += newCenterFreqParam;
-    params[2] = std::fmin(std::fmax(params[1], 20), 20000);
+    params[2] = std::fmin(std::fmax(params[2], 20), 20000);
 
-    auto newFeedbackParam = juce::jmap(feedback, 0.f, 1.f, -1.f, 1.f);
+    auto newFeedbackParam = juce::jmap(feedback, 0.f, 1.f, 0.f, 2.f);
     newFeedbackParam *= output;
     params[3] += newFeedbackParam;
-    params[3] = std::fmin(std::fmax(params[1], -1), 1);
+    params[3] = std::fmin(std::fmax(params[3], -1), 1);
 
     auto newMixParam = output * mix;
     params[4] += newMixParam;
-    params[4] = std::fmin(std::fmax(params[1], 0), 1);
+    params[4] = std::fmin(std::fmax(params[4], 0), 1);
 
+}
+
+void lfoData::modulateCombFilter(float freq, float feedback, float gain, float mix, float output, std::array<float, 4>& params)
+{
+    auto newFreqParam = juce::jmap(freq, 0.f, 1.f, 0.f, 75.f);
+    newFreqParam *= output;
+    params[0] += newFreqParam;
+    params[0] = std::fmin(std::fmax(params[0], 1), 75);
+
+    auto newFeedbackParm = juce::jmap(feedback, 0.f, 1.f, 0.f, .75f);
+    newFeedbackParm *= output;
+    params[1] += newFeedbackParm;
+    params[1] = std::fmin(std::fmax(params[1], .3), .75);
+
+    auto newGainParam = juce::jmap(gain, 0.f, 1.f, 0.f, 5.f);
+    newGainParam *= output;
+    params[2] += newGainParam;
+    params[2] = std::fmin(std::fmax(params[2], 0), 5);
+
+    auto newMixParam = output * mix;
+    params[3] += newMixParam;
+    params[3] = std::fmin(std::fmax(params[3], 0), 1);
 }

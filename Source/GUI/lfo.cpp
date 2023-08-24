@@ -17,8 +17,12 @@ LFOComp::LFOComp(juce::AudioProcessorValueTreeState& apvts) :
     attack1AT(apvts, "lfo1attack1", attack1), decay1AT(apvts, "lfo1decay1", decay1), sustain1AT(apvts, "lfo1sustain1", sustain1), release1AT(apvts, "lfo1release1", release1), gain1AT(apvts, "lfo1oscGain1", gain1),
     //LFO1 OSC2 ADSR & Gain
     attack2AT(apvts, "lfo1attack2", attack2), decay2AT(apvts, "lfo1decay2", decay2), sustain2AT(apvts, "lfo1sustain2", sustain2), release2AT(apvts, "lfo1release2", release2), gain2AT(apvts, "lfo1oscGain2", gain2),
+    //LFO 1 Ladder Params
+    cutoffAT(apvts, "lfo1ladderFreq", cutoff), resonanceAT(apvts, "lfo1ladderRes", resonance), driveAT(apvts, "lfo1ladderDrive", drive),
     //LFO 1 Phaser Params
-    rateAT(apvts, "lfo1phaserRate", rate), depthAT(apvts, "lfo1phaserDepth", depth), centerFreqAT(apvts, "lfo1phaserCenterFreq", centerFreq), pFeedbackAT(apvts, "lfo1phaserFeedback", pFeedback), pMixAT(apvts, "lfo1phaserMix", pMix)
+    rateAT(apvts, "lfo1phaserRate", rate), depthAT(apvts, "lfo1phaserDepth", depth), centerFreqAT(apvts, "lfo1phaserCenterFreq", centerFreq), pFeedbackAT(apvts, "lfo1phaserFeedback", pFeedback), pMixAT(apvts, "lfo1phaserMix", pMix),
+    //LFO 1 Comb Parms
+    freqAT(apvts, "lfo1combFreq", freq), cFeedbackAT(apvts, "lfo1combFeedback", cFeedback), cGainAT(apvts, "lfo1combGain", cGain), cMixAT(apvts, "lfo1combMix", cMix)
 {
 
     setLookAndFeel(&lnf);
@@ -241,33 +245,6 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
     cGain.setBounds(gainAreaComb);
     auto mixAreaComb = filterAreaComb.removeFromLeft(filterAreaComb.getWidth());
     cMix.setBounds(mixAreaComb);
-
-    /*if (cutoff.isVisible())
-    {
-        flexbox.items.clear();
-        flexbox.items.add(juce::FlexItem(cutoff).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(resonance).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(drive).withFlex(1.f));
-    }
-    else if (rate.isVisible())
-    {
-        flexbox.items.clear();
-        flexbox.items.add(juce::FlexItem(rate).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(depth).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(centerFreq).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(pFeedback).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(pMix).withFlex(1.f));
-    }
-    else if(freq.isVisible())
-    {
-        flexbox.items.clear();
-        flexbox.items.add(juce::FlexItem(freq).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(cFeedback).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(cGain).withFlex(1.f));
-        flexbox.items.add(juce::FlexItem(cMix).withFlex(1.f));
-    }
-
-    flexbox.performLayout(filterArea);*/
 
     Osc1.setBounds(adsr1Area.getX(), adsr1Area.getY() - 5, adsr1Area.getWidth(), adsr1Area.getHeight());
     Osc2.setBounds(adsr2Area.getX(), adsr2Area.getY() - 5, adsr2Area.getWidth(), adsr2Area.getHeight());
