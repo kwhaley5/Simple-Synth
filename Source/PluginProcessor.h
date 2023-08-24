@@ -63,6 +63,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void fillArrays();
+    void setLFOs(juce::AudioBuffer<float>& buffer);
     float getOutRMS(int channel);
 
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
@@ -85,7 +86,7 @@ private:
     juce::AudioParameterBool* bypassSynth2{ nullptr };
     juce::AudioParameterBool* bypassFilter{ nullptr };
 
-    //juce::AudioParameterInt* voices{ nullptr };
+    juce::AudioParameterInt* voices{ nullptr };
 
     //Osc1 Controls
     juce::AudioParameterFloat* attack1{nullptr};
@@ -232,9 +233,9 @@ private:
             //Filter(s) DONE
         //Global Gain DONE
         //output meters DONE
-        //LFO's
-            //Attach all the parms
-            //Create everything... twice
+        //LFO's DONE
+            //Attach all the parms DONE
+            //Create everything... twice DONE
         //Try to Copy Juce Graphs
             
     //Nice Haves (2.0?):

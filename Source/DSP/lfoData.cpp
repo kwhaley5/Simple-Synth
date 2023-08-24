@@ -78,7 +78,7 @@ void lfoData::modulateADSR(float attack, float decay, float sustain, float relea
     params[3] += newReleaseParam;
     params[3] = std::fmin(std::fmax(params[3], 0), 5);
 
-    auto newGainParam = juce::jmap(release, 0.f, 1.f, -60.f, 6.f);
+    auto newGainParam = juce::jmap(gain, 0.f, 1.f, 0.f, 72.f);
     newGainParam *= output;
     params[4] += newGainParam;
     params[4] = std::fmin(std::fmax(params[4], -60), 6);
