@@ -10,11 +10,12 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "../SynthVoice.h"
 #include "KiTiKLNF.h"
 
 struct OscComp : public juce::Component
 {
-    OscComp(juce::AudioProcessorValueTreeState& apvts);
+    OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer&);
     ~OscComp();
 
     void paint(juce::Graphics& g) override;
@@ -24,8 +25,6 @@ struct OscComp : public juce::Component
     void setHorzSlider(juce::Slider&);
     void setRotarySlider(juce::Slider&);
     void updateToggleState(juce::Button*);
-
-    void makeModVisible();
 
 private:
 
@@ -64,7 +63,8 @@ private:
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
     juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
 
-    juce::Slider attackMod1;
+    Visualizer* vis;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
+    //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
 };
+

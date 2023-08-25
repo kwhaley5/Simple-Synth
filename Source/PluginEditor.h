@@ -33,7 +33,7 @@ public:
 private:
     SimpleSynthAudioProcessor& audioProcessor;
 
-    OscComp oscComp{audioProcessor.apvts};
+    OscComp oscComp{audioProcessor.apvts, audioProcessor.viz};
     FilterComp filterComp{ audioProcessor.apvts };
     GlobalControls globalControls{ audioProcessor.apvts };
     LFOComp lfoComp{ audioProcessor.apvts };

@@ -25,13 +25,22 @@ struct SynthVoice : public juce::SynthesiserVoice
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
     void update(float attack, float decay, float sustain, float release, float gain);
     oscData& getOscillator() { return osc; }
+    //Visualizer viz;
 
 private:
     oscData osc;
     oscData fmOsc;
     adsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
+};
 
-
-
+struct Visualizer : public juce::AudioVisualiserComponent
+{
+    Visualizer() : AudioVisualiserComponent(1)
+    {
+        setRepaintRate(60);
+        setBufferSize(16);
+        setSamplesPerBlock(256);
+        setColours(juce::Colours::black, juce::Colours::white);
+    }
 };

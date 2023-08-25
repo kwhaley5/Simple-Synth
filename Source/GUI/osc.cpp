@@ -10,7 +10,7 @@
 
 #include "osc.h"
 
-OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
+OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     attackAT1(apvts, "attack1", attack1), attackAT2(apvts, "attack2", attack2),
     decayAT1(apvts, "decay1", decay1), decayAT2(apvts, "decay2", decay2),
     sustainAT1(apvts, "sustain1", sustain1), sustainAT2(apvts, "sustain2", sustain2),
@@ -22,16 +22,14 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
     triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
     fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth)
 {
+    //vis = &viz;
+    //addAndMakeVisible(vis);
     setLookAndFeel(&lnf);
     setSlider(attack1);
     setSlider(decay1);
     setSlider(sustain1);
     setSlider(release1);
     setHorzSlider(gain1);
-
-    setSlider(attackMod1);
-    attackMod1.setColour(0x1001300, juce::Colours::red);
-    attackMod1.setVisible(false);
 
     addAndMakeVisible(sine1);
     addAndMakeVisible(saw1);
@@ -71,7 +69,6 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts) :
 
     fmOsc.setButtonText("FM");
     addAndMakeVisible(fmOsc);
-    //add logic to switch type maybe
     setRotarySlider(fmDepth);
 }
 
@@ -135,13 +132,14 @@ void OscComp::resized()
 
     auto attackBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .25);
     attack1.setBounds(attackBounds1);
-    attackMod1.setBounds(attackBounds1);
     auto decayBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .33);
     decay1.setBounds(decayBounds1);
     auto sustainBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth() * .5);
     sustain1.setBounds(sustainBounds1);
     auto releaseBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth());
     release1.setBounds(releaseBounds1);
+
+    //vis->setBounds(boundsLeft);
 
     auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .3);
     auto waveTypeBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .166);
@@ -197,9 +195,4 @@ void OscComp::setRotarySlider(juce::Slider& slider)
 void OscComp::updateToggleState(juce::Button* button)
 {
     auto state = button->getToggleState();
-}
-
-void OscComp::makeModVisible()
-{
-    attackMod1.setVisible(true);
 }

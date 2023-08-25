@@ -70,6 +70,7 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
     juce::MidiKeyboardState keyState;
+    Visualizer viz;
 
 private:
 

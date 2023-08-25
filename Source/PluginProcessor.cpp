@@ -362,6 +362,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     globalGain.processCtx(buffer);
 
+    viz.pushBuffer(buffer);
+
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
     {
         rmsOut[channel] = juce::Decibels::gainToDecibels(buffer.getRMSLevel(channel, 0, buffer.getNumSamples()));
