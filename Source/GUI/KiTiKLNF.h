@@ -18,6 +18,9 @@ struct Laf : juce::LookAndFeel_V4 {
         float sliderPos, float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider) override;
     void drawToggleButton(juce::Graphics& g, juce::ToggleButton& button,
         bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+    void drawLinearSlider(juce::Graphics&, int x, int y, int width, int height,
+        float sliderPos, float minSliderPos, float maxSliderPos,
+        const juce::Slider::SliderStyle, juce::Slider&) override;
 
     struct LevelMeter : juce::Component
     {

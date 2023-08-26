@@ -196,6 +196,7 @@ void FilterComp::setRotarySlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setComponentID("Filter");
     addAndMakeVisible(slider);
 }
 

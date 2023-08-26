@@ -244,11 +244,11 @@ private:
         //Pitch/Mod Wheel visuals
 
     //Bugs/Design
-        //Clicking when note finished playing
-        //Design Vertical and Horizontal Sliders
-        //Outlines/Seperators
+        //Clicking when note finished playing DONE
+        //Design Vertical and Horizontal Sliders DONE
+        //Outlines/Seperators/backgrounds
         //Buttons clipping
-        //Sliders Clipping
+        //Adjust global area
         //Filters don't stay active when not displayed. 
 
     //==============================================================================

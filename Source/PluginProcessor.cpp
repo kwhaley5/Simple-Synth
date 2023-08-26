@@ -318,7 +318,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         }
 
     }*/
-
     globalGain.setGain(gGain->get());
 
     setLFOs(buffer);
@@ -362,7 +361,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     globalGain.processCtx(buffer);
 
-    viz.pushBuffer(buffer);
+    //viz.pushBuffer(buffer);
 
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
     {
@@ -493,7 +492,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     using namespace juce;
     AudioProcessorValueTreeState::ParameterLayout layout;
 
-    auto range = NormalisableRange<float>(0, 5, .001, .7);
+    auto range = NormalisableRange<float>(.001, 5, .001, .7);
     auto zeroToOne = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
     auto outGainRange = NormalisableRange<float>(-24, 24, .1, 1);

@@ -37,7 +37,7 @@ private:
     juce::ToggleButton sine     { "Sine" },
                        square   { "Square" },
                        saw      { "Saw" },
-                       triangle { "Triangle" };
+                       triangle { "Tri" };
     juce::AudioProcessorValueTreeState::ButtonAttachment sineAT, squareAT, sawAT, triangleAT;
 
     juce::Slider       attack1  { "O1 Attack" },
@@ -75,7 +75,7 @@ private:
     juce::ToggleButton sine2     { "Sine" },
                        square2   { "Square" },
                        saw2      { "Saw" },
-                       triangle2 { "Triangle" };
+                       triangle2 { "Tri" };
     juce::AudioProcessorValueTreeState::ButtonAttachment sine2AT, square2AT, saw2AT, triangle2AT;
 
     juce::Slider       attack12  { "O1 Attack" },
@@ -110,7 +110,8 @@ private:
                                                          rate2AT,    depth2AT,     centerFreq2AT, pFeedback2AT, pMix2AT,
                                                          freq2AT,    cFeedback2AT, cGain2AT,      cMix2AT;   
 
-    juce::Slider lfoRate1, lfoRate2;
+    juce::Slider lfoRate1 {"Rate"}, 
+                 lfoRate2{ "Rate" };
     juce::AudioProcessorValueTreeState::SliderAttachment lfoRate1AT, lfoRate2AT;
 
     juce::GroupComponent Osc1{ "Osc 1", "Osc 1" };
@@ -120,8 +121,6 @@ private:
     juce::GroupComponent Osc12{ "Osc 1", "Osc 1" };
     juce::GroupComponent Osc22{ "Osc 2", "Osc 2" };
     juce::GroupComponent Filter2{ "Filter", "Filter" };
-
-    juce::TooltipWindow name{ this, 100 };
 
     juce::Slider comboChange;
 };

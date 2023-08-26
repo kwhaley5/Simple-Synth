@@ -78,6 +78,5 @@ void adsrData::setADSR(float attack, float decay, float sustain, float release)
     adsrParams.decay = decay;
     adsrParams.sustain = sustain;
     adsrParams.release = release;
-
     setParameters(adsrParams);
 }

@@ -38,7 +38,7 @@ private:
                        decay1    { "Decay" },
                        sustain1  { "Sustain" },
                        release1  { "Release" },
-                       gain1     { "Gain" };
+                       gain1     { " Gain " };
 
     juce::AudioProcessorValueTreeState::SliderAttachment attackAT1, decayAT1, sustainAT1, releaseAT1;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT1;
@@ -52,7 +52,7 @@ private:
                        decay2    { "Decay" },
                        sustain2  { "Sustain" },
                        release2  { "Release" },
-                       gain2     { "Gain" };
+                       gain2     { " Gain " };
 
     juce::AudioProcessorValueTreeState::SliderAttachment attackAT2, decayAT2, sustainAT2, releaseAT2;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT2;
@@ -63,7 +63,7 @@ private:
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
     juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
 
-    Visualizer* vis;
+    //Visualizer* vis;
 
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
 };

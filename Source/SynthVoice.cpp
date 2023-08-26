@@ -24,9 +24,8 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
     adsr.noteOff();
-    if (!allowTailOff || adsr.isActive())
+    if (!allowTailOff || !adsr.isActive())
         clearCurrentNote();
-    adsr.reset();
 }
 
 void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
@@ -60,7 +59,10 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int s
         outputBuffer.addFrom(ch, startSample, synthBuffer, ch, 0, numSamples);
 
         if (!adsr.isActive())
+        {
             clearCurrentNote();
+        }
+            
     }
 }
 

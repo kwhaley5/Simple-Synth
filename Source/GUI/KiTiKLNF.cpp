@@ -73,48 +73,82 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
     Point<float> thumbPoint(bounds.getCentreX() + radius / rootTwo * std::cos(toAngle - MathConstants<float>::halfPi), //This is one is farthest from center.
         bounds.getCentreY() + radius / rootTwo * std::sin(toAngle - MathConstants<float>::halfPi));
 
+    if (slider.getComponentID() == "LFO")
+        rootTwo = 2;
+
     Point<float> shortLine(bounds.getCentreX() + (arcRadius - (arcRadius / rootTwo)) * std::cos(toAngle - MathConstants<float>::halfPi), //This one is closer to the center
         bounds.getCentreY() + (arcRadius - (arcRadius / rootTwo)) * std::sin(toAngle - MathConstants<float>::halfPi));
 
     g.drawLine(shortLine.getX(), shortLine.getY(), thumbPoint.getX(), thumbPoint.getY(), lineW / 2);
 
     //Add text Values
-    auto const fontSize = 15.f;
+    if (slider.getComponentID() == "Filter")
+    {
+        auto fontSize = 15.f;
+        auto str = String('none');
+        auto value = slider.getValue();
+        if (value < 1) {
+            value *= 100;
+            str = String(value);
+            str.append("%", 3);
+        }
+        else {
+            str = String(value);
+            str.append(" ms", 5);
+        }
 
-    auto str = String('none');
-    auto value = slider.getValue();
-    if (value < 1) {
+        auto strWidth = g.getCurrentFont().getStringWidth(str);
+
+        Rectangle<float> r;
+        r.setBottom(boundsFull.getBottom() - 10);
+        r.setLeft(boundsFull.getCentre().getX() - strWidth);
+        r.setRight(boundsFull.getCentre().getX() + strWidth);
+        r.setTop(boundsFull.getBottom() - 30);
+
+        g.setColour(Colours::whitesmoke);
+        g.setFont(fontSize);
+        g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
+
+        auto name = slider.getName();
+        strWidth = g.getCurrentFont().getStringWidth(name);
+        r.setTop(0);
+        r.setLeft(boundsFull.getCentre().getX() - strWidth);
+        r.setRight(boundsFull.getCentre().getX() + strWidth);
+        r.setBottom(20);
+        g.setColour(Colours::whitesmoke);
+        g.drawFittedText(name, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
+    }
+    else if (slider.getComponentID() == "LFO")
+    {
+        auto fontSize = 14.f;
+        auto str = String('none');
+        auto value = slider.getValue();
+
         value *= 100;
         str = String(value);
         str.append("%", 3);
+
+        auto strWidth = g.getCurrentFont().getStringWidth(str);
+
+        Rectangle<float> r;
+        r.setBottom(boundsFull.getCentreY() + 10);
+        r.setLeft(boundsFull.getCentre().getX() - strWidth);
+        r.setRight(boundsFull.getCentre().getX() + strWidth);
+        r.setTop(boundsFull.getCentreY() - 10);
+
+        g.setColour(Colours::whitesmoke);
+        g.setFont(fontSize);
+        g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
+
+        /*auto name = slider.getName();
+        strWidth = g.getCurrentFont().getStringWidth(name);
+        r.setTop(0);
+        r.setLeft(boundsFull.getCentre().getX() - strWidth);
+        r.setRight(boundsFull.getCentre().getX() + strWidth);
+        r.setBottom(boundsFull.getCentre().getY() - 10);
+        g.setColour(Colours::whitesmoke);
+        g.drawFittedText(name, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);*/
     }
-    else {
-        str = String(value);
-        str.append(" ms", 5);
-    }
-
-    auto strWidth = g.getCurrentFont().getStringWidth(str);
-
-    Rectangle<float> r;
-    r.setBottom(boundsFull.getBottom() - 10);
-    r.setLeft(boundsFull.getCentre().getX() - strWidth);
-    r.setRight(boundsFull.getCentre().getX() + strWidth);
-    r.setTop(boundsFull.getBottom() - 30);
-
-    g.setColour(Colours::whitesmoke);
-    g.setFont(fontSize);
-    g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
-
-    auto name = slider.getName();
-    strWidth = g.getCurrentFont().getStringWidth(name);
-    r.setTop(0);
-    r.setLeft(boundsFull.getCentre().getX() - strWidth);
-    r.setRight(boundsFull.getCentre().getX() + strWidth);
-    r.setBottom(20);
-    g.setColour(Colours::whitesmoke);
-    g.drawFittedText(name, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
-
-
 
 }
 
@@ -147,6 +181,112 @@ void Laf::drawToggleButton(juce::Graphics& g, juce::ToggleButton& button,
     g.setFont(fontSize);
     g.drawFittedText(button.getButtonText(), button.getLocalBounds(), juce::Justification::centred, 10);
 
+}
+
+void Laf::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle style, juce::Slider& slider)
+{
+    using namespace juce;
+    auto boundsFull = Rectangle<int>(x, y, width, height).toFloat();
+
+    if (slider.isBar())
+    {
+        g.setColour(slider.findColour(Slider::trackColourId));
+        g.fillRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float> (x), (float)y + 0.5f, sliderPos - (float)x, (float)height - 1.0f)
+            : Rectangle<float>((float)x + 0.5f, sliderPos, (float)width - 1.0f, (float)y + ((float)height - sliderPos)));
+    }
+    else
+    {
+        auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
+        auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
+
+        auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
+
+        Point<float> startPoint(slider.isHorizontal() ? (float)x : (float)x + (float)width * 0.5f,
+            slider.isHorizontal() ? (float)y + (float)height * 0.5f : (float)(height + y));
+
+        Point<float> endPoint(slider.isHorizontal() ? (float)(width + x) : startPoint.x,
+            slider.isHorizontal() ? startPoint.y : (float)y);
+
+        Path backgroundTrack;
+        backgroundTrack.startNewSubPath(startPoint);
+        backgroundTrack.lineTo(endPoint);
+        g.setColour(slider.findColour(Slider::backgroundColourId));
+        g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+        Path valueTrack;
+        Point<float> minPoint, maxPoint, thumbPoint;
+
+        if (isTwoVal || isThreeVal)
+        {
+            minPoint = { slider.isHorizontal() ? minSliderPos : (float)width * 0.5f,
+                         slider.isHorizontal() ? (float)height * 0.5f : minSliderPos };
+
+            if (isThreeVal)
+                thumbPoint = { slider.isHorizontal() ? sliderPos : (float)width * 0.5f,
+                               slider.isHorizontal() ? (float)height * 0.5f : sliderPos };
+
+            maxPoint = { slider.isHorizontal() ? maxSliderPos : (float)width * 0.5f,
+                         slider.isHorizontal() ? (float)height * 0.5f : maxSliderPos };
+        }
+        else
+        {
+            auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
+            auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
+
+            minPoint = startPoint;
+            maxPoint = { kx, ky };
+        }
+
+        auto thumbWidth = getSliderThumbRadius(slider);
+ 
+        valueTrack.startNewSubPath(minPoint);
+        valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
+        g.setColour(Colour(64u, 194u, 230u));
+        g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+        if (!isTwoVal)
+        {
+            auto name = slider.getName();
+            auto value = static_cast<String>(slider.getValue());
+            auto thumb = slider.getThumbBeingDragged();
+            
+            auto font = g.getCurrentFont();
+            auto newWidth = font.getStringWidth(name);
+            auto thumbRect = Rectangle<float>(static_cast<float> (newWidth + 5), static_cast<float> (thumbWidth + 5)).withCentre(isThreeVal ? thumbPoint : maxPoint);
+            auto grad = ColourGradient::ColourGradient(Colour(186u, 34u, 34u), thumbRect.getCentreX(), thumbRect.getCentreY(), Colours::black, thumbRect.getWidth() / 2, thumbRect.getHeight() / 2, true);
+            g.setGradientFill(grad);
+            
+            g.fillRoundedRectangle(thumbRect, 2);
+            g.setColour(juce::Colours::whitesmoke);
+            g.drawText(thumb ? name : value, thumbRect, Justification::centred, 1);
+        }
+
+        if (isTwoVal || isThreeVal)
+        {
+            auto sr = jmin(trackWidth, (slider.isHorizontal() ? (float)height : (float)width) * 0.4f);
+            auto pointerColour = slider.findColour(Slider::thumbColourId);
+
+            if (slider.isHorizontal())
+            {
+                drawPointer(g, minSliderPos - sr,
+                    jmax(0.0f, (float)y + (float)height * 0.5f - trackWidth * 2.0f),
+                    trackWidth * 2.0f, pointerColour, 2);
+
+                drawPointer(g, maxSliderPos - trackWidth,
+                    jmin((float)(y + height) - trackWidth * 2.0f, (float)y + (float)height * 0.5f),
+                    trackWidth * 2.0f, pointerColour, 4);
+            }
+            else
+            {
+                drawPointer(g, jmax(0.0f, (float)x + (float)width * 0.5f - trackWidth * 2.0f),
+                    minSliderPos - trackWidth,
+                    trackWidth * 2.0f, pointerColour, 1);
+
+                drawPointer(g, jmin((float)(x + width) - trackWidth * 2.0f, (float)x + (float)width * 0.5f), maxSliderPos - sr,
+                    trackWidth * 2.0f, pointerColour, 3);
+            }
+        }
+    }
 }
 
 void Laf::LevelMeter::paint(juce::Graphics& g)

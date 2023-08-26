@@ -175,6 +175,7 @@ void OscComp::setSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearVertical);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setTooltip("Sec");
     addAndMakeVisible(slider);
 }
 
@@ -182,6 +183,7 @@ void OscComp::setHorzSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearHorizontal);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setTooltip("dB");
     addAndMakeVisible(slider);
 }
 
@@ -189,6 +191,7 @@ void OscComp::setRotarySlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setComponentID("Filter");
     addAndMakeVisible(slider);
 }
 
