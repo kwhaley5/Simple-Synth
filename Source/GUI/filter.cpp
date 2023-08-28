@@ -139,7 +139,7 @@ void FilterComp::paint(juce::Graphics& g)
     g.setColour(juce::Colours::black);
     g.fillRect(bounds.reduced(10));
     g.setColour(juce::Colours::white);
-    g.drawFittedText("Filter Graph Here", bounds, juce::Justification::centred, 1);
+    g.drawFittedText("Soon...", bounds, juce::Justification::centred, 1);
 }
 
 void FilterComp::resized()

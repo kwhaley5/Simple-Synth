@@ -139,15 +139,6 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
         g.setColour(Colours::whitesmoke);
         g.setFont(fontSize);
         g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
-
-        /*auto name = slider.getName();
-        strWidth = g.getCurrentFont().getStringWidth(name);
-        r.setTop(0);
-        r.setLeft(boundsFull.getCentre().getX() - strWidth);
-        r.setRight(boundsFull.getCentre().getX() + strWidth);
-        r.setBottom(boundsFull.getCentre().getY() - 10);
-        g.setColour(Colours::whitesmoke);
-        g.drawFittedText(name, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);*/
     }
 
 }
@@ -155,31 +146,61 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
 void Laf::drawToggleButton(juce::Graphics& g, juce::ToggleButton& button,
     bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-    auto fontSize = juce::jmin(15.0f, (float)button.getHeight());
-    auto getFont = g.getCurrentFont();
-    auto rectWidth = getFont.getStringWidthFloat(button.getButtonText());
 
-    juce::Rectangle<float> r;
+    if (button.getComponentID() == "Power")
+    {
+        juce::Path powerButton;
 
-    //Tweak this when you make your cutsom LNF headers and cpp files
-    r.setSize(juce::jmax(20.f, rectWidth * 1.75f), fontSize * 1.2);
-    r.translate((button.getWidth() / 2 - rectWidth * .85f), (button.getHeight() / 2 - fontSize / 2 - 1.f));
+        auto bounds = button.getLocalBounds().reduced(2);
+        auto size = juce::jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+        auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+
+        float ang = 30.f;
+
+        size -= 12;
+
+        powerButton.addCentredArc(r.getCentreX(), r.getCentreY(), size * .5, size * .5, 0.f, juce::degreesToRadians(ang), juce::degreesToRadians(360 - ang), true);
+
+        powerButton.startNewSubPath(r.getCentreX(), r.getY() + 3);
+        powerButton.lineTo(r.getCentre());
+
+        juce::PathStrokeType pst(2.f, juce::PathStrokeType::JointStyle::curved);
+
+        auto color = button.getToggleState() ? juce::Colours::dimgrey : juce::Colours::white;
+
+        g.setColour(color);
+        g.strokePath(powerButton, pst);
+        g.drawEllipse(r, 2);
+
+    }
+    else 
+    {
+        auto fontSize = juce::jmin(15.0f, (float)button.getHeight());
+        auto getFont = g.getCurrentFont();
+        auto rectWidth = getFont.getStringWidthFloat(button.getButtonText());
+
+        juce::Rectangle<float> r;
+
+        //Tweak this when you make your cutsom LNF headers and cpp files
+        r.setSize(juce::jmax(20.f, rectWidth * 1.5f), fontSize * 1.1);
+        r.translate((button.getWidth() / 2 - rectWidth * .75f), (button.getHeight() / 2 - fontSize / 2 - 1.f));
 
 
-    auto color = button.getToggleState() ? juce::Colour(64u, 194u, 230u) : juce::Colours::dimgrey;
-    g.setColour(color);
-    g.fillRoundedRectangle(r, fontSize / 4);
+        auto color = button.getToggleState() ? juce::Colour(64u, 194u, 230u) : juce::Colours::dimgrey;
+        g.setColour(color);
+        g.fillRoundedRectangle(r, fontSize / 4);
 
-    auto bounds = r.toFloat();
-    g.setColour(juce::Colours::black);
-    g.drawRoundedRectangle(bounds.getCentreX() - bounds.getWidth() / 2, bounds.getCentreY() - bounds.getHeight() / 2, bounds.getWidth(), bounds.getHeight(), fontSize / 4, 2);
+        auto bounds = r.toFloat();
+        g.setColour(juce::Colours::black);
+        g.drawRoundedRectangle(bounds.getCentreX() - bounds.getWidth() / 2, bounds.getCentreY() - bounds.getHeight() / 2, bounds.getWidth(), bounds.getHeight(), fontSize / 4, 2);
 
-    if (!button.isEnabled())
-        g.setOpacity(0.5f);
+        if (!button.isEnabled())
+            g.setOpacity(0.5f);
 
-    g.setColour(button.findColour(juce::ToggleButton::textColourId));
-    g.setFont(fontSize);
-    g.drawFittedText(button.getButtonText(), button.getLocalBounds(), juce::Justification::centred, 10);
+        g.setColour(button.findColour(juce::ToggleButton::textColourId));
+        g.setFont(fontSize);
+        g.drawFittedText(button.getButtonText(), button.getLocalBounds(), juce::Justification::centred, 10);
+    }
 
 }
 
@@ -210,7 +231,7 @@ void Laf::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int heigh
         Path backgroundTrack;
         backgroundTrack.startNewSubPath(startPoint);
         backgroundTrack.lineTo(endPoint);
-        g.setColour(slider.findColour(Slider::backgroundColourId));
+        g.setColour(Colours::black);
         g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
         Path valueTrack;

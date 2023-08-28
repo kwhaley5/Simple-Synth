@@ -31,15 +31,23 @@ SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
 //==============================================================================
 void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
     auto bounds = getLocalBounds();
+    auto grad = juce::ColourGradient::ColourGradient(juce::Colour(186u, 34u, 34u), bounds.toFloat().getTopLeft(), juce::Colour(186u, 34u, 34u), bounds.toFloat().getBottomRight(), false);
+    grad.addColour(.33f, juce::Colours::transparentBlack);
+    grad.addColour(.5f, juce::Colour(186u, 34u, 34u));
+    grad.addColour(.66f, juce::Colours::transparentBlack);
+
+    g.setGradientFill(grad);
+    //g.fillAll (juce::Colour(50u,30u,30u)); //create background
+    g.fillAll();
+
+    //auto bounds = getLocalBounds();
     g.setColour(juce::Colours::red);
     g.setFont(15.0f);
 
     auto globalControls = bounds.removeFromTop(bounds.getHeight() * .05);
     g.drawRect(globalControls);
-    g.drawFittedText("Global Controls", globalControls, juce::Justification::centred, 1);
+    //g.drawFittedText("Global Controls", globalControls, juce::Justification::centred, 1);
 
     auto filter = bounds.removeFromTop(bounds.getHeight() * .47);
     auto oscs = filter.removeFromLeft(bounds.getWidth() * .66);

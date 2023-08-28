@@ -237,18 +237,21 @@ private:
         //LFO's DONE
             //Attach all the parms DONE
             //Create everything... twice DONE
-        //Try to Copy Juce Graphs
             
     //Nice Haves (2.0?):
         //Dynamic Voice Adjustment
         //Pitch/Mod Wheel visuals
+        //JUCE FFT Graphs
+        //Preset Manager
 
     //Bugs/Design
         //Clicking when note finished playing DONE
         //Design Vertical and Horizontal Sliders DONE
         //Outlines/Seperators/backgrounds
-        //Buttons clipping
-        //Adjust global area
+        //Fix Gloabl Gain Knob
+        // Update Drop Down LNF
+        //Buttons clipping DONE
+        //Adjust global area DONE
         //Filters don't stay active when not displayed. 
 
     //==============================================================================

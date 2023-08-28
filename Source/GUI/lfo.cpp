@@ -243,14 +243,21 @@ LFOComp::~LFOComp()
 
 void LFOComp::paint(juce::Graphics& g)
 {
-    auto bounds = getLocalBounds().reduced(10);
+    auto bounds = getLocalBounds();
+    auto leftBounds = bounds.removeFromLeft(bounds.getWidth() * .5).reduced(10);
+    auto rightBounds = bounds.reduced(10);
 
-    auto buttonArea = bounds.removeFromTop(bounds.getHeight() * .25);
-    auto adsr1Area = bounds.removeFromTop(bounds.getHeight() * .33);
-    auto adsr2Area = bounds.removeFromTop(bounds.getHeight() * .5);
-    auto filterArea = bounds;
-
+    auto buttonArea = leftBounds.removeFromLeft(leftBounds.getHeight() * .25);
+    auto adsr1Area = leftBounds.removeFromTop(leftBounds.getHeight() * .33);
+    auto adsr2Area = leftBounds.removeFromTop(leftBounds.getHeight() * .5);
+    auto filterArea = leftBounds;
+    g.setColour(juce::Colours::whitesmoke);
+    g.setFont(15.f);
+    g.drawFittedText("LFO Wave Type", buttonArea, juce::Justification::centredTop, 2);
     //g.drawRect(adsr1Area.toFloat());
+
+    auto buttonRight = rightBounds.removeFromLeft(leftBounds.getWidth() * .15);
+    g.drawFittedText("LFO Wave Type", buttonRight, juce::Justification::centredTop, 2);
 
 }
 
@@ -290,7 +297,7 @@ void LFOComp::setGroupComp(juce::GroupComponent& group)
 
 void LFOComp::setLeft(juce::Rectangle<int>& bounds)
 {
-    auto buttonArea = bounds.removeFromLeft(bounds.getHeight() * .15);
+    auto buttonArea = bounds.removeFromLeft(bounds.getHeight() * .25);
     auto adsr1Area = bounds.removeFromTop(bounds.getHeight() * .33);
     auto adsr2Area = bounds.removeFromTop(bounds.getHeight() * .5);
     auto filterAreaLadder = bounds;
@@ -301,6 +308,7 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
     flexbox.flexDirection = juce::FlexBox::Direction::column;
     flexbox.flexWrap = juce::FlexBox::Wrap::noWrap;
 
+    flexbox.items.add(juce::FlexItem().withFlex(.5f));
     flexbox.items.add(juce::FlexItem(sine).withFlex(1.f));
     flexbox.items.add(juce::FlexItem(saw).withFlex(1.f));
     flexbox.items.add(juce::FlexItem(square).withFlex(1.f));
@@ -360,7 +368,7 @@ void LFOComp::setLeft(juce::Rectangle<int>& bounds)
 
 void LFOComp::setRight(juce::Rectangle<int>& bounds)
 {
-    auto buttonArea = bounds.removeFromLeft(bounds.getHeight() * .15);
+    auto buttonArea = bounds.removeFromLeft(bounds.getHeight() * .25);
     auto adsr1Area = bounds.removeFromTop(bounds.getHeight() * .33);
     auto adsr2Area = bounds.removeFromTop(bounds.getHeight() * .5);
     auto filterAreaLadder = bounds;
@@ -371,6 +379,7 @@ void LFOComp::setRight(juce::Rectangle<int>& bounds)
     flexbox.flexDirection = juce::FlexBox::Direction::column;
     flexbox.flexWrap = juce::FlexBox::Wrap::noWrap;
 
+    flexbox.items.add(juce::FlexItem().withFlex(.5f));
     flexbox.items.add(juce::FlexItem(sine2).withFlex(1.f));
     flexbox.items.add(juce::FlexItem(saw2).withFlex(1.f));
     flexbox.items.add(juce::FlexItem(square2).withFlex(1.f));

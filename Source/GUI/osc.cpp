@@ -94,7 +94,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPicture);
     g.setColour(juce::Colours::white);
-    g.drawFittedText("Osc picture here", oscPicture, juce::Justification::centred, 1);
+    g.drawFittedText("Soon...", oscPicture, juce::Justification::centred, 1);
 
     g.setColour(juce::Colours::black);
 
@@ -106,7 +106,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPictureR);
     g.setColour(juce::Colours::white);
-    g.drawFittedText("Osc picture here", oscPictureR, juce::Justification::centred, 1);
+    g.drawFittedText("Soon...", oscPictureR, juce::Justification::centred, 1);
 
 }
 
