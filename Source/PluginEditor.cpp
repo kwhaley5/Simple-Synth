@@ -38,32 +38,40 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)
     grad.addColour(.66f, juce::Colours::transparentBlack);
 
     g.setGradientFill(grad);
-    //g.fillAll (juce::Colour(50u,30u,30u)); //create background
     g.fillAll();
 
-    //auto bounds = getLocalBounds();
-    g.setColour(juce::Colours::red);
+    g.setColour(juce::Colour(186u, 34u, 34u).withAlpha(.3f));
     g.setFont(15.0f);
 
     auto globalControls = bounds.removeFromTop(bounds.getHeight() * .05);
-    g.drawRect(globalControls);
-    //g.drawFittedText("Global Controls", globalControls, juce::Justification::centred, 1);
+    g.fillRect(globalControls);
+    ds.drawForRectangle(g, globalControls);
 
+    g.setColour(juce::Colour(64u, 194u, 230u).withAlpha(.4f));
     auto filter = bounds.removeFromTop(bounds.getHeight() * .47);
-    auto oscs = filter.removeFromLeft(bounds.getWidth() * .66);
-    g.drawRect(filter);
-    //g.drawFittedText("Filter", filter, juce::Justification::centred, 1);
-    g.drawRect(oscs);
-    //g.drawFittedText("Oscilators", oscs, juce::Justification::centred, 1);
+    g.fillRect(filter);
+    ds.drawForRectangle(g, filter);
 
+    auto oscs = filter.removeFromLeft(bounds.getWidth() * .66);
+    g.setColour(juce::Colours::whitesmoke.withAlpha(.3f));
+
+    juce::Path divider;
+    divider.startNewSubPath(filter.getBottomLeft().toFloat());
+    divider.lineTo(filter.getTopLeft().toFloat());
+    g.strokePath(divider, juce::PathStrokeType(1));
+
+    g.setColour(juce::Colour(186u, 34u, 34u).withAlpha(.3f));
     auto lfos = bounds.removeFromTop(bounds.getHeight() * .7);
-    g.drawRect(lfos);
-    //g.drawFittedText("LFO's", lfos, juce::Justification::centred, 1);
+    g.fillRect(lfos);
+    ds.drawForRectangle(g, lfos);
+
+    g.setColour(juce::Colours::black.withAlpha(.5f));
+    auto halfLFO = lfos.removeFromLeft(lfos.getWidth() * .5);
+    divider.startNewSubPath(halfLFO.getBottomRight().toFloat());
+    divider.lineTo(halfLFO.getTopRight().toFloat());
+    g.strokePath(divider, juce::PathStrokeType(1));
 
     auto keyboard = bounds;
-    g.drawRect(keyboard.getX(), keyboard.getY(), keyboard.getWidth(), keyboard.getHeight() + 2);
-    //g.drawFittedText("Keyboard", keyboard, juce::Justification::centred, 1);
-
     setColour(0x1005004, juce::Colour(64u, 194u, 230u));
 
 }

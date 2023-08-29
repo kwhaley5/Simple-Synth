@@ -292,7 +292,7 @@ void LFOComp::setGroupComp(juce::GroupComponent& group)
 {
     addAndMakeVisible(group);
     group.setText(group.getText());
-    lnf.setColour(0x1005400, juce::Colours::cyan);
+    lnf.setColour(0x1005400, juce::Colour(64u, 194u, 230u));
 }
 
 void LFOComp::setLeft(juce::Rectangle<int>& bounds)

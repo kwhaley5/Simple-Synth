@@ -21,6 +21,13 @@ struct Laf : juce::LookAndFeel_V4 {
     void drawLinearSlider(juce::Graphics&, int x, int y, int width, int height,
         float sliderPos, float minSliderPos, float maxSliderPos,
         const juce::Slider::SliderStyle, juce::Slider&) override;
+    void drawComboBox(juce::Graphics&, int width, int height, bool isButtonDown,
+        int buttonX, int buttonY, int buttonW, int buttonH,
+        juce::ComboBox&) override;
+    void drawPopupMenuItem(juce::Graphics&, const juce::Rectangle<int>& area,
+        bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu,
+        const juce::String& text, const juce::String& shortcutKeyText,
+        const juce::Drawable* icon, const juce::Colour* textColour) override;
 
     struct LevelMeter : juce::Component
     {

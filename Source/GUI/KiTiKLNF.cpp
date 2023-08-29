@@ -87,7 +87,19 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
         auto fontSize = 15.f;
         auto str = String('none');
         auto value = slider.getValue();
-        if (value < 1) {
+
+        //if(slider.getName() == ""
+
+        if (slider.getName() == "Drive" || slider.getName() == "Gain")
+        {
+            str = String(value);
+        }
+        else if (slider.getName() == "Rate" || slider.getName() == "Frequency")
+        {
+            str = String(value);
+            str.append(" Hz", 5);
+        }
+        else if (value <= 1) {
             value *= 100;
             str = String(value);
             str.append("%", 3);
@@ -306,6 +318,104 @@ void Laf::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int heigh
                 drawPointer(g, jmin((float)(x + width) - trackWidth * 2.0f, (float)x + (float)width * 0.5f), maxSliderPos - sr,
                     trackWidth * 2.0f, pointerColour, 3);
             }
+        }
+    }
+}
+
+void Laf::drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& box)
+{
+    using namespace juce;
+
+    auto cornerSize = box.findParentComponentOfClass<ChoicePropertyComponent>() != nullptr ? 0.0f : 3.0f;
+    Rectangle<int> boxBounds(0, 0, width, height);
+
+    g.setColour(box.findColour(ComboBox::backgroundColourId));
+    g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+
+    g.setColour(juce::Colours::black.withAlpha(.7f));
+    g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+
+    Rectangle<int> arrowZone(width - 30, 0, 20, height);
+    Path path;
+    path.startNewSubPath((float)arrowZone.getX() + 3.0f, (float)arrowZone.getCentreY() - 2.0f);
+    path.lineTo((float)arrowZone.getCentreX(), (float)arrowZone.getCentreY() + 3.0f);
+    path.lineTo((float)arrowZone.getRight() - 3.0f, (float)arrowZone.getCentreY() - 2.0f);
+
+    g.setColour(box.findColour(ComboBox::arrowColourId).withAlpha((box.isEnabled() ? 0.9f : 0.2f)));
+    g.strokePath(path, PathStrokeType(2.0f));
+}
+
+void Laf::drawPopupMenuItem(juce::Graphics& g, const juce::Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const juce::String& text, const juce::String& shortcutKeyText, const juce::Drawable* icon, const juce::Colour* textColour)
+{
+    using namespace juce;
+
+    if (isSeparator)
+    {
+        auto r = area.reduced(5, 0);
+        r.removeFromTop(roundToInt(((float)r.getHeight() * 0.5f) - 0.5f));
+
+        g.setColour(juce::Colours::black.withAlpha(0.3f));
+        g.fillRect(r);
+    }
+    else
+    {
+        auto textColour =  findColour(PopupMenu::textColourId);
+        auto background =  Colours::black.withAlpha(0.3f);
+
+        g.setColour(background);
+
+        auto r = area.reduced(1);
+        g.fillRect(r);
+
+        if (isHighlighted && isActive)
+        {
+            g.setColour(findColour(PopupMenu::highlightedBackgroundColourId));
+            g.fillRect(r);
+
+            g.setColour(findColour(PopupMenu::highlightedTextColourId));
+        }
+        else
+        {
+            g.setColour(textColour.withMultipliedAlpha(isActive ? 1.0f : 0.5f));
+        }
+
+        r.reduce(jmin(5, area.getWidth() / 20), 0);
+
+        auto font = getPopupMenuFont();
+
+        auto maxFontHeight = (float)r.getHeight() / 1.3f;
+
+        if (font.getHeight() > maxFontHeight)
+            font.setHeight(maxFontHeight);
+
+        g.setFont(font);
+
+        if (hasSubMenu)
+        {
+            auto arrowH = 0.6f * getPopupMenuFont().getAscent();
+
+            auto x = static_cast<float> (r.removeFromRight((int)arrowH).getX());
+            auto halfH = static_cast<float> (r.getCentreY());
+
+            Path path;
+            path.startNewSubPath(x, halfH - arrowH * 0.5f);
+            path.lineTo(x + arrowH * 0.6f, halfH);
+            path.lineTo(x, halfH + arrowH * 0.5f);
+
+            g.strokePath(path, PathStrokeType(2.0f));
+        }
+
+        r.removeFromRight(3);
+        g.drawFittedText(text, r, Justification::centredLeft, 1);
+
+        if (shortcutKeyText.isNotEmpty())
+        {
+            auto f2 = font;
+            f2.setHeight(f2.getHeight() * 0.75f);
+            f2.setHorizontalScale(0.95f);
+            g.setFont(f2);
+
+            g.drawText(shortcutKeyText, r, Justification::centredRight, true);
         }
     }
 }

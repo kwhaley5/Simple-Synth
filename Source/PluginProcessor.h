@@ -243,16 +243,18 @@ private:
         //Pitch/Mod Wheel visuals
         //JUCE FFT Graphs
         //Preset Manager
+        //Filters don't stay active when not displayed. 
 
     //Bugs/Design
         //Clicking when note finished playing DONE
         //Design Vertical and Horizontal Sliders DONE
-        //Outlines/Seperators/backgrounds
-        //Fix Gloabl Gain Knob
-        // Update Drop Down LNF
+        //Outlines/Seperators/backgrounds DONE
+        //Fix Gloabl Gain Knob EH
+        // Update Drop Down LNF DONE
+        // Update Knobs so they don't change to wrong label DONE
         //Buttons clipping DONE
         //Adjust global area DONE
-        //Filters don't stay active when not displayed. 
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)

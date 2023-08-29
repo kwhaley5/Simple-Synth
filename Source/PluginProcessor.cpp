@@ -520,10 +520,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterBool>("square1", "Osc 1 Square Wave", false));
     layout.add(std::make_unique<AudioParameterBool>("triangle1", "Osc 1 Triangle Wave", false));
 
-    layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .5f));
+    layout.add(std::make_unique<AudioParameterFloat>("attack1", "Osc 1 Attack", range, .05f));
     layout.add(std::make_unique<AudioParameterFloat>("decay1", "Osc 1 Decay", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", zeroToOne, 1));
-    layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .5));
+    layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain1", "Osc 1 Gain", gainRange, -6));
 
     //osc 2
@@ -534,8 +534,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
 
     layout.add(std::make_unique<AudioParameterFloat>("attack2", "Osc 2 Attack", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("decay2", "Osc 2 Decay", range, .05));
-    layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", zeroToOne, .5));
-    layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .5));
+    layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", zeroToOne, .1));
+    layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
 
     layout.add(std::make_unique<AudioParameterBool>("fmOsc", "FM from Osc 2", false));
@@ -547,7 +547,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
 
     //Ladder
     layout.add(std::make_unique<AudioParameterChoice>("ladderChoice", "Ladder Filter Types", ladderFilterTypes, 0));
-    layout.add(std::make_unique<AudioParameterFloat>("ladderFreq", "Ladder Frequency", freqRange, 100));
+    layout.add(std::make_unique<AudioParameterFloat>("ladderFreq", "Ladder Frequency", freqRange, 20000));
     layout.add(std::make_unique<AudioParameterFloat>("ladderRes", "Ladder Resonance", zeroToOne, 0));
     layout.add(std::make_unique<AudioParameterFloat>("ladderDrive", "Ladder Drive", driveRange, 1));
 
