@@ -94,7 +94,7 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
         {
             str = String(value);
         }
-        else if (slider.getName() == "Rate" || slider.getName() == "Frequency")
+        else if (slider.getName() == "Rate" || slider.getName() == "Frequency" || (slider.getName() == "Depth" && slider.getTitle() == "fmDepth"))
         {
             str = String(value);
             str.append(" Hz", 5);

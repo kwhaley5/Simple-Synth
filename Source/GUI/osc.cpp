@@ -70,6 +70,7 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     fmOsc.setButtonText("FM");
     addAndMakeVisible(fmOsc);
     setRotarySlider(fmDepth);
+    fmDepth.setTitle("fmDepth");
 }
 
 OscComp::~OscComp()

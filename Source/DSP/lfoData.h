@@ -25,4 +25,5 @@ struct lfoData : public juce::dsp::Oscillator<float>
 private:
 
     int lfoUpdateRate = 100;
+    juce::SmoothedValue<float> newOutput{ 0.0 };
 };

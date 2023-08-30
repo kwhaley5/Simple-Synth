@@ -329,8 +329,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             voice->update(osc1Params[0], osc1Params[1], osc1Params[2], osc1Params[3], osc1Params[4]);
             voice->getOscillator().setWaveType(wavetype1);
-            if(fmOsc->get())
-                voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), wavetype2);
+            voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), fmOsc->get(), wavetype2); 
         }
     }
 
@@ -467,7 +466,7 @@ void SimpleSynthAudioProcessor::setLFOs(juce::AudioBuffer<float>& buffer)
     lfo1.modulateADSR(lfo1attack1->get(), lfo1decay1->get(), lfo1sustain1->get(), lfo1release1->get(), lfo1oscGain1->get(), lfo1Output, osc1Params);
     lfo1.modulateADSR(lfo1attack2->get(), lfo1decay2->get(), lfo1sustain2->get(), lfo1release2->get(), lfo1oscGain2->get(), lfo1Output, osc2Params);
     lfo1.modulateLadderFilter(lfo1ladderFreq->get(), lfo1ladderRes->get(), lfo1ladderDrive->get(), lfo1Output, ladderParams);
-    lfo1.modulatePhaserFilter(lfo1phaserRate->get(), lfo1phaserDepth->get(), lfo1phaserCenterFreq->get(), lfo1phaserDepth->get(), lfo1phaserMix->get(), lfo1Output, phaserParams);
+    lfo1.modulatePhaserFilter(lfo1phaserRate->get(), lfo1phaserDepth->get(), lfo1phaserCenterFreq->get(), lfo1phaserFeedback->get(), lfo1phaserMix->get(), lfo1Output, phaserParams);
     lfo1.modulateCombFilter(lfo1combFreq->get(), lfo1combFeedback->get(), lfo1combGain->get(), lfo1combMix->get(), lfo1Output, combParams);
    
     //LFO 2
@@ -477,7 +476,7 @@ void SimpleSynthAudioProcessor::setLFOs(juce::AudioBuffer<float>& buffer)
     lfo2.modulateADSR(lfo2attack1->get(), lfo2decay1->get(), lfo2sustain1->get(), lfo2release1->get(), lfo2oscGain1->get(), lfo2Output, osc1Params);
     lfo2.modulateADSR(lfo2attack2->get(), lfo2decay2->get(), lfo2sustain2->get(), lfo2release2->get(), lfo2oscGain2->get(), lfo2Output, osc2Params);
     lfo2.modulateLadderFilter(lfo2ladderFreq->get(), lfo2ladderRes->get(), lfo2ladderDrive->get(), lfo2Output, ladderParams);
-    lfo2.modulatePhaserFilter(lfo2phaserRate->get(), lfo2phaserDepth->get(), lfo2phaserCenterFreq->get(), lfo2phaserDepth->get(), lfo2phaserMix->get(), lfo2Output, phaserParams);
+    lfo2.modulatePhaserFilter(lfo2phaserRate->get(), lfo2phaserDepth->get(), lfo2phaserCenterFreq->get(), lfo2phaserFeedback->get(), lfo2phaserMix->get(), lfo2Output, phaserParams);
     lfo2.modulateCombFilter(lfo2combFreq->get(), lfo2combFeedback->get(), lfo2combGain->get(), lfo2combMix->get(), lfo2Output, combParams);
 }
 
@@ -492,15 +491,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     using namespace juce;
     AudioProcessorValueTreeState::ParameterLayout layout;
 
-    auto range = NormalisableRange<float>(.001, 5, .001, .7);
+    auto range = NormalisableRange<float>(.001, 5, .001, .4);
     auto zeroToOne = NormalisableRange<float>(0, 1, .01, 1);
     auto gainRange = NormalisableRange<float>(-60, 6, .1, 1);
     auto outGainRange = NormalisableRange<float>(-24, 24, .1, 1);
     auto fmRange = NormalisableRange<float>(0, 1000, 1, 1);
-    auto freqRange = NormalisableRange<float>(20, 20000, 1, 1);
+    auto freqRange = NormalisableRange<float>(20, 20000, 1, .5);
     auto driveRange = NormalisableRange<float>(1, 10, .1, 1);
     auto feedbackRange = NormalisableRange<float>(-1, 1, .01, 1);
-    auto lfoRange = NormalisableRange<float>(.1, 10, .1, 1);
+    auto lfoRange = NormalisableRange<float>(.1, 10, .1, 1.2);
     auto combRange = NormalisableRange<float>(1, 75, .1, 1);
     auto combFeedbackRange = NormalisableRange<float>(.3, .75, .01, 1);
 

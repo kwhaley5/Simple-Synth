@@ -50,7 +50,7 @@ void oscData::processNextBlock(juce::dsp::ProcessContextReplacing<float>& contex
     oscGain.process(context);
 }
 
-void oscData::setFmParams(float freq, float depth, std::array<bool, 4>& array)
+void oscData::setFmParams(float freq, float depth, bool isOn, std::array<bool, 4>& array)
 {
     if (array[0])
         fmOsc.initialise([](float x) { return std::sin(x); });
@@ -61,10 +61,20 @@ void oscData::setFmParams(float freq, float depth, std::array<bool, 4>& array)
     else
         fmOsc.initialise([](float x) { return std::asin(std::cos(x)) / juce::MathConstants<float>::halfPi; });
 
-    fmOsc.setFrequency(juce::MidiMessage::getMidiNoteInHertz(freq));
-    fmDepth = depth;
-    auto currentFreq = juce::MidiMessage::getMidiNoteInHertz(lastMidiNote) + fmMod;
-    setFrequency(currentFreq >= 0 ? currentFreq : currentFreq * -1.0f);
+    if (isOn)
+    {
+        fmOsc.setFrequency(juce::MidiMessage::getMidiNoteInHertz(freq));
+        fmDepth = depth;
+        auto currentFreq = juce::MidiMessage::getMidiNoteInHertz(lastMidiNote) + fmMod;
+        setFrequency(currentFreq >= 0 ? currentFreq : currentFreq * -1.0f);
+    }
+    else
+    {
+        fmOsc.reset();
+        fmDepth = 0;
+        auto currentFreq = juce::MidiMessage::getMidiNoteInHertz(lastMidiNote);
+        setFrequency(currentFreq >= 0 ? currentFreq : currentFreq * -1.0f);
+    }
 }
 
 void oscData::setGain(float gain)

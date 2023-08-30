@@ -17,7 +17,7 @@ struct oscData : public juce::dsp::Oscillator<float>
     void setWaveType(std::array<bool, 4>&);
     void setWaveFreq(int midiNoteNumber, int osc1MidiNoteNumber, bool isFmActive, float depth);
     void processNextBlock(juce::dsp::ProcessContextReplacing<float>&);
-    void setFmParams(float freq, float depth, std::array<bool, 4>& array);
+    void setFmParams(float freq, float depth, bool isOn, std::array<bool, 4>& array);
     void setGain(float gain);
 
 private:

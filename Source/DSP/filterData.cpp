@@ -29,6 +29,11 @@ void FilterData::prepareToPlay(double sampleRate, int samplesPerBlock, int numCh
         c.prepare(spec);
         c.setMaximumDelayInSamples(sampleRate);
     }
+    for (auto& s : smoothedDelay)
+    {
+        s.reset(sampleRate, .05);
+        s.setCurrentAndTargetValue(.5);
+    }
 }
 
 void FilterData::process(juce::AudioBuffer<float>& buffer)
@@ -83,7 +88,6 @@ void FilterData::processComb(int channel, juce::AudioBuffer<float>& buffer, floa
 {
     //comb filtering is selayed signal. My implmentation with delayline
     smoothedDelay[channel].setTargetValue(freq/1000);
-
     auto block = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
